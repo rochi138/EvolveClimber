@@ -18,7 +18,7 @@
 
 GLFWwindow* g_window;
 ImGuiContext* imgui = 0;
-EC::EvolveClimber evolveClimber;
+EC::EvolveClimber* evolveClimber = new EC::EvolveClimber();
 
 EM_JS(int, canvas_get_width, (), {
   return Module.canvas.width;
@@ -47,21 +47,34 @@ void loop()
   ImGui_ImplGlfw_NewFrame();
   ImGui::NewFrame();
 
-  evolveClimber.draw_main();
+  if(ImGui::BeginMainMenuBar())
+  {
+    if(ImGui::MenuItem("Reset"))
+    {
+      delete evolveClimber;
+      evolveClimber = new EC::EvolveClimber();
+    }
+
+    ImGui::SameLine(ImGui::GetWindowWidth()-335);
+    ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::EndMainMenuBar();
+  }
+
+  evolveClimber->draw_main();
 
   ImGui::Render();
 
+  ImVec4 clear_color = ImGui::GetStyle().Colors[ImGuiCol_WindowBg];
   int display_w, display_h;
   glfwMakeContextCurrent(g_window);
   glfwGetFramebufferSize(g_window, &display_w, &display_h);
-  glViewport(0, 0, display_w, display_h);
+  glViewport(0, -0, display_w, display_h);
   glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
   glClear(GL_COLOR_BUFFER_BIT);
 
   ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
   glfwMakeContextCurrent(g_window);
 }
-
 
 int init()
 {
@@ -77,7 +90,7 @@ int init()
   // Open a window and create its OpenGL context
   int canvasWidth = 800;
   int canvasHeight = 600;
-  g_window = glfwCreateWindow( canvasWidth, canvasHeight, "WebGui Demo", NULL, NULL);
+  g_window = glfwCreateWindow( canvasWidth, canvasHeight, "Evolve Climber", NULL, NULL);
   if( g_window == NULL )
   {
       fprintf( stderr, "Failed to open GLFW window.\n" );
@@ -106,12 +119,11 @@ int init()
   return 0;
 }
 
-
 void quit()
 {
+  delete evolveClimber;
   glfwTerminate();
 }
-
 
 extern "C" int main(int argc, char** argv)
 {
