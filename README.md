@@ -21,7 +21,7 @@ make
 ```
 source ../emsdk/emsdk_env.sh
 ```
-^ run once per terminal session
-Open repo folder in VS Code
-Right-click imgui.html
-Open with Live Server
+^ run once per terminal session\n
+Open repo folder in VS Code\n
+Right-click imgui.html\n
+Open with Live Server\n
