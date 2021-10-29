@@ -5,8 +5,7 @@ This is an evolution simulator using genetic algorithms to produce a climbing cr
 
 ## To Run
 ### Setup
-(requires emsdk and imgui to build and Live Server VS Code plug-in)
-clone outside this repo (recommended)
+Requires emsdk and imgui to build and Live Server VS Code plug-in to run. Git clone outside this repo (recommended).
 ```
 git clone https://github.com/emscripten-core/emsdk.git
 source ../emsdk/emsdk_env.sh
@@ -21,7 +20,7 @@ make
 ```
 source ../emsdk/emsdk_env.sh
 ```
-^ run once per terminal session\n
-Open repo folder in VS Code\n
-Right-click imgui.html\n
-Open with Live Server\n
+^ run once per terminal session
+1. Open repo folder in VS Code
+2. Right-click imgui.html
+3. Open with Live Server
