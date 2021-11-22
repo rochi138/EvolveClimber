@@ -1,8 +1,7 @@
-#include "consts.h"
-#include "draw_main.h"
-
 #include <stdio.h>
 #include <iostream>
+
+#include "draw_main.h"
 
 using namespace EC;
 

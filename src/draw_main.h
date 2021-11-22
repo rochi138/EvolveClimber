@@ -1,5 +1,7 @@
 #pragma once
 
+#include "consts.h"
+
 #include "imgui.h"
 
 namespace EC
