@@ -20,7 +20,7 @@
 GLFWwindow* g_window;
 ImGuiContext* imgui = 0;
 EC::EvolveClimber* evolveClimber = new EC::EvolveClimber();
-EC::ECIMGUI* ecImgui = new EC::ECIMGUI();
+EC::ECIMGUI* ecImgui = new EC::ECIMGUI(evolveClimber);
 
 EM_JS(int, canvas_get_width, (), {
   return Module.canvas.width;
@@ -54,8 +54,13 @@ void loop()
     if(ImGui::MenuItem("Reset"))
     {
       delete evolveClimber;
+      delete ecImgui;
       evolveClimber = new EC::EvolveClimber();
+      ecImgui = new EC::ECIMGUI(evolveClimber);
     }
+
+    if(ImGui::MenuItem("Settings"))
+      ecImgui->onClickSettings();
 
     ImGui::SameLine(ImGui::GetWindowWidth()-335);
     ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);

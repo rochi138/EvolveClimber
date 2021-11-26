@@ -5,52 +5,52 @@
 
 using namespace EC;
 
-ECIMGUI::ECIMGUI()
-: menu(0)
+ECIMGUI::ECIMGUI(EvolveClimber* evolveClimber)
+: m_showSettings(false)
+, m_menu(0)
+, m_evolveClimber(evolveClimber)
 {}
 
 void ECIMGUI::draw_main()
 {
-    // // 1. Show a simple window.
-    // // Tip: if we don't call ImGui::Begin()/ImGui::End() the widgets automatically appears in a window called "Debug".
-    // {
-    //     ImGui::Text("Hello, world!");
-    //     ImGui::Text("Hello, world!");                        // Display some text (you can use a format string too)
-    //     ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-    //     // ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-    //     ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our windows open/close state
-    //     ImGui::Checkbox("Another Window", &show_another_window);
-
-    //     if (ImGui::Button("Button"))                            // Buttons return true when clicked (NB: most widgets return true when edited/activated)
-    //         counter++;
-    //     ImGui::SameLine();
-    //     ImGui::Text("counter = %d", counter);
-    // }
-
-    // //std::cout << "2nd window" << std::endl;
-
-    // // 2. Show another simple window. In most cases you will use an explicit Begin/End pair to name your windows.
-    // if (show_another_window)
-    // {
-    //     ImGui::Begin("Another Window", &show_another_window);
-    //     ImGui::Text("Hello from another window!");
-    //     if (ImGui::Button("Close Me"))
-    //         show_another_window = false;
-    //     ImGui::End();
-    // }
-
-    // // 3. Show the ImGui demo window. Most of the sample code is in ImGui::ShowDemoWindow(). Read its code to learn more about Dear ImGui!
-    // if (show_demo_window)
-    // {
-    //     ImGui::SetNextWindowPos(ImVec2(650, 20), ImGuiCond_FirstUseEver); // Normally user code doesn't need/want to call this because positions are saved in .ini file anyway. Here we just want to make the demo initial state a bit more friendly!
-    //     ImGui::ShowDemoWindow(&show_demo_window);
-    // }
-
-    ImGui::SetNextWindowPos(ImVec2(650, 20));
+    ImGui::SetNextWindowPos(ImVec2(20, 20));
+    ImGui::SetNextWindowSize(ImVec2(800, 600));
     ImGui::Begin("Evolve Climber");
-    ImGui::Text("Hello from another window!");
-    if (ImGui::Button("Close Me"))
-        show_another_window = false;
+    
+    switch (m_menu)
+    {
+        case 0: startMenu(); break;
+        case 1: gen0Menu(); break;
+    }
+
     ImGui::End();
+
+    if (m_showSettings)
+    {
+        ImGui::SetNextWindowPos(ImVec2(820, 20));
+        ImGui::SetNextWindowSize(ImVec2(200, 600));
+        ImGui::Begin("Settings", &m_showSettings);
+        ImGui::Text("Setttings go here");
+        ImGui::End();
+    }
+}
+
+void ECIMGUI::startMenu()
+{
+    ImGui::Text("EVOLUTION!");
+    if (ImGui::Button("START"))
+    {
+        m_menu = 1;
+    }
+}
+
+void ECIMGUI::gen0Menu()
+{
+    ImGui::Text("Generation 0");
+    ImGui::Text("Sine there are no creatures yet, create 1000 creatures!");
+    ImGui::Text("They will be randomly created, and also very simple.");
+    if (ImGui::Button("CREATE"))
+    {
+        m_menu = 2;
+    }
 }
