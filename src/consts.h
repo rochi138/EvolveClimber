@@ -89,4 +89,9 @@ extern bool stepbystepslow;
 extern bool slowDies;
 extern int timeShow;
 extern int p[29];
+
+extern int viewGenMenu_idx;
+extern string viewGenMenu_topText[5];
+extern string viewGenMenu_bottomText[5];
+extern string viewGenMenu_buttonText[5];
 }

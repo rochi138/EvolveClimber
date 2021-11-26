@@ -76,4 +76,27 @@ int p[] = {
   0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 
   100, 200, 300, 400, 500, 600, 700, 800, 900, 910, 920, 930, 940, 950, 960, 970, 980, 990, 999
 };
+
+int viewGenMenu_idx = 4;
+string viewGenMenu_topText[5] = {
+  "",
+  "",
+  "Faster creatures at the top!",
+  "Faster creatures are more likely to survive because they can outrun their predators.  Slow creatures get eaten.",
+  "These are the creatures of generation #"
+};
+string viewGenMenu_bottomText[5] = {
+  "All 1,000 creatures have been tested.  Now let's sort them!",
+  "",
+  "Slowest creatures at the bottom. (Going backward = slow)",
+  "Because of random chance, a few fast ones get eaten, while a few slow ones survive.",
+  "What perils will they face? Find out next time!"
+};
+string viewGenMenu_buttonText[5] = {
+  "Sort",
+  "Skip",
+  "Kill",
+  "Reproduce",
+  "Continue"
+};
 }

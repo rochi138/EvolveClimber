@@ -22,5 +22,7 @@ namespace EC
 
         public:
         EvolveClimber();
+
+        int getGen() { return m_gen; };
     };
 }
