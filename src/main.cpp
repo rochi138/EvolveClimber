@@ -13,12 +13,14 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
-#include "draw_main.h"
+#include "ECIMGUI.h"
+#include "EvolveClimber.h"
 #include "consts.h"
 
 GLFWwindow* g_window;
 ImGuiContext* imgui = 0;
 EC::EvolveClimber* evolveClimber = new EC::EvolveClimber();
+EC::ECIMGUI* ecImgui = new EC::ECIMGUI();
 
 EM_JS(int, canvas_get_width, (), {
   return Module.canvas.width;
@@ -60,7 +62,7 @@ void loop()
     ImGui::EndMainMenuBar();
   }
 
-  evolveClimber->draw_main();
+  ecImgui->draw_main();
 
   ImGui::Render();
 

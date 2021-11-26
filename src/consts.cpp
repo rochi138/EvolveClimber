@@ -12,7 +12,7 @@ namespace EC
 
 // static const ImVec4 black = ImVec4(Color32::black);
 float windowSizeMultiplier = 0.8;
-int SEED = 0;
+
 
 bool haveGround = true;
 int histBarsPerMeter = 5;
@@ -32,9 +32,7 @@ int lastImageSaved = -1;
 float pressureUnit = 500.0/2.37;
 float energyUnit = 20;
 float nauseaUnit = 5;
-int minBar = -10;
-int maxBar = 100;
-int barLen = maxBar-minBar;
+
 int gensToDo = 0;
 float cTimer = 60;
 float postFontSize = 0.96;
@@ -53,8 +51,6 @@ int timer = 0;
 float camX = 0;
 float camY = 0;
 int frames = 60;
-int menu = 0;
-int gen = -1;
 float sliderX = 1170;
 int genSelected = 0;
 bool drag = false;

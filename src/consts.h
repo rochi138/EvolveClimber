@@ -13,12 +13,7 @@ namespace EC
 
 // static const ImVec4 black = ImVec4(Color32::black);
 extern float windowSizeMultiplier;
-extern int SEED;
 
-extern vector<float> percentile;
-extern vector<int> barCounts;
-extern vector<int> speciesCounts;
-extern vector<int> topSpeciesCounts;
 extern vector<Creature> creatureDatabase;
 extern vector<Rectangle> rects;
 // PGraphics graphImage;
@@ -43,9 +38,6 @@ extern int lastImageSaved;
 extern float pressureUnit;
 extern float energyUnit;
 extern float nauseaUnit;
-extern int minBar;
-extern int maxBar;
-extern int barLen;
 extern int gensToDo;
 extern float cTimer;
 extern float postFontSize;
