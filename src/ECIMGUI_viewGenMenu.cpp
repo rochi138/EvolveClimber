@@ -11,13 +11,13 @@ void ECIMGUI::viewGenMenu()
     string topText = idx == 4 ? viewGenMenu_topText[idx] + std::to_string(m_evolveClimber->getGen()+1) : viewGenMenu_topText[idx];
 
     ImGui::Text("%s", topText.c_str());
-    display1000();
+    displayGen();
     ImGui::Text("%s", viewGenMenu_bottomText[idx].c_str());
     if (ImGui::Button(viewGenMenu_buttonText[idx].c_str()))
         onClickButton();
 }
 
-void ECIMGUI::display1000()
+void ECIMGUI::displayGen()
 {
 
 }

@@ -31,7 +31,7 @@ namespace EC
 
         void draw_settings();
 
-        void display1000();    
+        void displayGen();    
         void onClickButton();
 
         void drawPosts(int toImage);
