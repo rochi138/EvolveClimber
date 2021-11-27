@@ -8,7 +8,7 @@ using namespace EC;
 void ECIMGUI::viewGenMenu()
 {
     int idx = m_menu - viewGenMenu_idx;
-    string topText = idx == 4 ? viewGenMenu_topText[idx] + std::to_string(m_evolveClimber->getGen()+1) : viewGenMenu_topText[idx];
+    string topText = idx == 4 ? viewGenMenu_topText[idx] + std::to_string(m_evolveClimber->getGen()) : viewGenMenu_topText[idx];
 
     ImGui::Text("%s", topText.c_str());
     displayGen();

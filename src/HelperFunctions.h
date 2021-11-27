@@ -2,7 +2,7 @@
 
 namespace EC{
 	float inter(int a, int b, float offset);
-	int rInt();
+	int rInt(int min = -1, int max = 1);
 	float rFloat(float min, float max);
 	float r();
 	int getNewMuscleAxon(int nodeNum);

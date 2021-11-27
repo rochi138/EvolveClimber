@@ -37,8 +37,12 @@ namespace EC
 		void setOperation(int i) { operation = i; }
 		void setSafeInput(bool b) { safeInput = b; }
 		void setValue(float f) { value = f; }
+		void setVx(float f) { vx = f; }
+		void setVy(float f) { vy = f; }
 
 		void incrementVx(int i) { vx += i; }
 		void incrementVy(int i) { vy += i; }
+		void incrementX(float f) { x += f; }
+		void incrementY(float f) { y += f; }
 	};
 }

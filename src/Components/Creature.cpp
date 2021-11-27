@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 
 #define _USE_MATH_DEFINES
  
@@ -50,10 +51,9 @@ namespace EC
     }
     void Creature::checkForOverlap() {
         vector<int> bads(0);
-        
         for (vector<Muscle>::iterator i = m.begin(); i != m.end(); ++i)
         {
-            for (vector<Muscle>::iterator j = ++i; j != m.end(); ++j)
+            for (vector<Muscle>::iterator j = i+1; j != m.end(); ++j)
             {
                 if ( i->getC1() == j->getC1() && i->getC2() == j->getC2() )
                     bads.push_back(i - m.begin());
@@ -63,7 +63,6 @@ namespace EC
                     bads.push_back(i - m.begin());
             }
         }
-
         for (int i = bads.size()-1; i >= 0; --i) {
             int b = bads.at(i);
             if (b < m.size()) {

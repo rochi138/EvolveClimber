@@ -22,7 +22,6 @@ namespace EC
         Creature(int tid, vector<Node> tn, vector<Muscle> tm, float td, bool talive, float tct, float tmut);
         Creature modified(int id);
 
-        private:
         void checkForOverlap();
         void checkForLoneNodes();
         void checkForBadAxons();

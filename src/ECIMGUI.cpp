@@ -49,10 +49,11 @@ void ECIMGUI::startMenu()
 void ECIMGUI::gen0Menu()
 {
     ImGui::Text("Generation 0");
-    ImGui::Text("Sine there are no creatures yet, create 1000 creatures!");
+    ImGui::Text("Since there are no creatures yet, create 1000 creatures!");
     ImGui::Text("They will be randomly created, and also very simple.");
     if (ImGui::Button("CREATE"))
     {
+        m_evolveClimber->onClickCreate();
         m_menu = 8;
     }
 }
