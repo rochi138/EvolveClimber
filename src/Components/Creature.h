@@ -3,6 +3,8 @@
 #include "Muscle.h"
 #include "Node.h"
 
+#include <vector>
+
 using namespace std;
 
 namespace EC
@@ -16,14 +18,18 @@ namespace EC
         float creatureTimer;
         float mutability;
         
-        Creature(int tid, vector<Node> tn, vector<Muscle> tm, float td, bool talive, float tct, float tmut) {
-            id = tid;
-            m = tm;
-            n = tn;
-            d = td;
-            alive = talive;
-            creatureTimer = tct;
-            mutability = tmut;
-        }
+        public:
+        Creature(int tid, vector<Node> tn, vector<Muscle> tm, float td, bool talive, float tct, float tmut);
+        Creature modified(int id);
+
+        private:
+        void checkForOverlap();
+        void checkForLoneNodes();
+        void checkForBadAxons();
+        void addRandomNode();
+        void addRandomMuscle(int tc1, int tc2);
+        void removeRandomNode();
+        void removeRandomMuscle();
+        Creature copyCreature(int newID);
     };
 }

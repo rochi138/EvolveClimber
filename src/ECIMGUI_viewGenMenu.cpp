@@ -26,10 +26,15 @@ void ECIMGUI::onClickButton()
 {
     switch(m_menu)
     {
-        case 4: m_menu += 1; break;
-        case 5: m_menu += 1; break;
-        case 6: m_menu += 1; break;
-        case 7: m_menu += 1; break;
-        case 8: m_menu = 3; break;
+        case 4:  break;
+        case 5:  break;
+        case 6:  break;
+        case 7:  break;
+        case 8:  break;
     }    
+
+    if (m_menu == 8)
+        m_menu = 3;
+    else
+        m_menu += 1;
 }

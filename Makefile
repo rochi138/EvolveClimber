@@ -2,8 +2,10 @@ CXX = emcc
 OUTPUT = imgui.js
 IMGUI_DIR:=../imgui
 SRC_DIR:= src
+COM_DIR:= $(SRC_DIR)/Components
 
 SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
+SOURCES += $(wildcard $(COM_DIR)/*.cpp)
 SOURCES += $(IMGUI_DIR)/backends/imgui_impl_glfw.cpp $(IMGUI_DIR)/backends/imgui_impl_opengl3.cpp
 SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_widgets.cpp $(IMGUI_DIR)/imgui_tables.cpp
 

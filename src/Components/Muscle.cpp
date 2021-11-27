@@ -1,4 +1,5 @@
 #include "../consts.h"
+#include "../HelperFunctions.h"
 #include "Muscle.h"
 #include "Node.h"
 
@@ -6,48 +7,56 @@ using namespace std;
 
 namespace EC
 {
-    class Muscle {
-		void applyForce(int i, vector<Node> n) {
-			float target = previousTarget;
-			if(energyDirection == 1 || energy >= 0.0001){
+	Muscle::Muscle(int taxon, int tc1, int tc2, float tlen, float trigidity) {
+		axon  = taxon;
+		previousTarget = len = tlen;
+		c1 = tc1;
+		c2 = tc2;
+		rigidity = trigidity;
+	}
+
+	void Muscle::applyForce(int i, vector<Node> n) {
+		float target = previousTarget;
+		if(energyDirection == 1 || energy >= 0.0001){
 			if(axon >= 0 && axon < n.size()){
-				target = len*toMuscleUsable(n.get(axon).value);
+				target = len*toMuscleUsable(n.at(axon).getValue());
 			}else{
 				target = len;
 			}
-			}
-			Node ni1 = n.get(c1);
-			Node ni2 = n.get(c2);
-			float distance = dist(ni1.x, ni1.y, ni2.x, ni2.y);
-			float angle = atan2(ni1.y-ni2.y, ni1.x-ni2.x);
-			force = min(max(1-(distance/target), -0.4), 0.4);
-			ni1.vx += cos(angle)*force*rigidity/ni1.m;
-			ni1.vy += sin(angle)*force*rigidity/ni1.m;
-			ni2.vx -= cos(angle)*force*rigidity/ni2.m;
-			ni2.vy -= sin(angle)*force*rigidity/ni2.m;
-			energy = max(energy+energyDirection*abs(previousTarget-target)*rigidity*energyUnit,0);
-			previousTarget = target;
 		}
-		Muscle copyMuscle() {
-			return new Muscle(axon, c1, c2, len, rigidity);
+		Node ni1 = n.at(c1);
+		Node ni2 = n.at(c2);
+		float distance = dist(ni1.getX(), ni1.getY(), ni2.getX(), ni2.getY());
+		float angle = atan2(ni1.getY()-ni2.getY(), ni1.getX()-ni2.getX());
+		force = min(max(1-(distance/target), -0.4f), 0.4f);
+		ni1.incrementVx(cos(angle)*force*rigidity/ni1.getM());
+		ni1.incrementVy(sin(angle)*force*rigidity/ni1.getM());
+		ni2.incrementVx(-cos(angle)*force*rigidity/ni2.getM());
+		ni2.incrementVy(-sin(angle)*force*rigidity/ni2.getM());
+		energy = max(energy+energyDirection*abs(previousTarget-target)*rigidity*energyUnit,0.0f);
+		previousTarget = target;
+	}
+	Muscle Muscle::copyMuscle() {
+		Muscle newMuscle(axon, c1, c2, len, rigidity);
+		return newMuscle;
+	}
+	Muscle Muscle::modifyMuscle(float mutability, int nodeNum) {
+		int newc1 = c1;
+		int newc2 = c2;
+		int newAxon = axon;
+		if(rFloat(0,1)<bigMutationChance*mutability){
+			newc1 = rand() %nodeNum;
 		}
-		Muscle modifyMuscle(int nodeNum, float mutability) {
-			int newc1 = c1;
-			int newc2 = c2;
-			int newAxon = axon;
-			if(random(0,1)<bigMutationChance*mutability){
-			newc1 = int(random(0,nodeNum));
-			}
-			if(random(0,1)<bigMutationChance*mutability){
-			newc2 = int(random(0,nodeNum));
-			}
-			if(random(0,1)<bigMutationChance*mutability){
+		if(rFloat(0,1)<bigMutationChance*mutability){
+			newc2 = rand() %nodeNum;
+		}
+		if(rFloat(0,1)<bigMutationChance*mutability){
 			newAxon = getNewMuscleAxon(nodeNum);
-			}
-			float newR = min(max(rigidity*(1+r()*0.9*mutability),0.01),0.08);
-			float newLen = min(max(len+r()*mutability,0.4),1.25);
-
-			return new Muscle(newAxon, newc1, newc2, newLen, newR);
 		}
-	};
+		float newR = min(max(rigidity*(1+r()*0.9*mutability),0.01),0.08);
+		float newLen = min(max(len+r()*mutability,0.4f),1.25f);
+
+		Muscle newMuscle(newAxon, newc1, newc2, newLen, newR);
+		return newMuscle;
+	}
 }
