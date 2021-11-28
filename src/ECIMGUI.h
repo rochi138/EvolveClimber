@@ -3,17 +3,10 @@
 #include "consts.h"
 #include "EvolveClimber.h"
 
-#include "imgui.h"
-
 namespace EC
 {
     class ECIMGUI
     {         
-        bool m_showSettings;
-        int m_menu;
-
-        EvolveClimber* m_evolveClimber;
-
         public:
         ECIMGUI(EvolveClimber* evolveClimber);
         void draw_main();
@@ -22,6 +15,11 @@ namespace EC
         void setEvolveClimber(EvolveClimber* evolveClimber) {m_evolveClimber = evolveClimber;}
 
         private:
+        bool m_showSettings;
+        int m_menu;
+
+        EvolveClimber* m_evolveClimber;
+
         void draw_menus();
         void startMenu();
         void gen0Menu();

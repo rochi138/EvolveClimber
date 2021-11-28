@@ -15,17 +15,17 @@ namespace EC
 		rigidity = trigidity;
 	}
 
-	void Muscle::applyForce(int i, vector<Node> n) {
+	void Muscle::applyForce(vector<Node>* n) {
 		float target = previousTarget;
 		if(energyDirection == 1 || energy >= 0.0001){
-			if(axon >= 0 && axon < n.size()){
-				target = len*toMuscleUsable(n.at(axon).getValue());
+			if(axon >= 0 && axon < n->size()){
+				target = len*toMuscleUsable(n->at(axon).getValue());
 			}else{
 				target = len;
 			}
 		}
-		Node ni1 = n.at(c1);
-		Node ni2 = n.at(c2);
+		Node ni1 = n->at(c1);
+		Node ni2 = n->at(c2);
 		float distance = dist(ni1.getX(), ni1.getY(), ni2.getX(), ni2.getY());
 		float angle = atan2(ni1.getY()-ni2.getY(), ni1.getX()-ni2.getX());
 		force = min(max(1-(distance/target), -0.4f), 0.4f);

@@ -133,9 +133,9 @@ namespace EC
 		prevY = y;
 		prevX = x;
 	}
-	void Node::doMath(int i, vector<Node> n){
-		float axonValue1 = n.at(axon1).getValue();
-		float axonValue2 = n.at(axon2).getValue();
+	void Node::doMath(vector<Node>* n){
+		float axonValue1 = n->at(axon1).getValue();
+		float axonValue2 = n->at(axon2).getValue();
 
 		switch (operation)
 		{
@@ -153,7 +153,7 @@ namespace EC
 			case 11: valueToBe = pressure; break; // pressure
 		}
 	}
-	void Node::realizeMathValues(int i){
+	void Node::realizeMathValues(){
 		value = valueToBe;
 	}
 	Node Node::copyNode() {

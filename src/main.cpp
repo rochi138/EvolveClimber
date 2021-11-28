@@ -13,12 +13,15 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+#include "implot.h"
+
 #include "ECIMGUI.h"
 #include "EvolveClimber.h"
 #include "consts.h"
 
 GLFWwindow* g_window;
 ImGuiContext* imgui = 0;
+ImPlotContext* implot = 0;
 EC::EvolveClimber* evolveClimber = new EC::EvolveClimber();
 EC::ECIMGUI* ecImgui = new EC::ECIMGUI(evolveClimber);
 
@@ -42,6 +45,7 @@ void loop()
   glfwSetWindowSize(g_window, width, height);
 
   ImGui::SetCurrentContext(imgui);
+  ImPlot::SetCurrentContext(implot);
 
   glfwPollEvents();
 
@@ -111,6 +115,7 @@ int init()
   IMGUI_CHECKVERSION();
   ImGui::CreateContext();
   ImGuiIO& io = ImGui::GetIO();
+  ImPlot::CreateContext();
 
   ImGui_ImplGlfw_InitForOpenGL(g_window, false);
   ImGui_ImplOpenGL3_Init();
@@ -120,6 +125,7 @@ int init()
   //ImGui::StyleColorsClassic();
 
   imgui = ImGui::GetCurrentContext();
+  implot = ImPlot::GetCurrentContext();
 
   resizeCanvas();
 

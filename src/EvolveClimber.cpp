@@ -7,7 +7,9 @@
 using namespace EC;
 
 EvolveClimber::EvolveClimber()
-: m_creatures(0)
+: m_stepbystep(false)
+, m_stepbystepslow(false)
+, m_creatures(0)
 , m_minBar(-10)
 , m_maxBar(100)
 , m_barLen(m_maxBar-m_minBar)
@@ -19,6 +21,90 @@ EvolveClimber::EvolveClimber()
 , m_topSpeciesCounts(10)
 {
     srand(m_SEED);
+}
+
+void EvolveClimber::startASAP()
+{
+  creaturesTested = 0;
+  setGlobalVariables(c.begin() + creaturesTested);
+  // camZoom = 0.01;
+  // setMenu(5);
+  if (!m_stepbystepslow) {
+    for (vector<Creature>::iterator it = c.begin(); it != c.end(); ++it)
+    {
+      setGlobalVariables(it);
+      for (int s = 0; s < 900; s++) {
+        simulate();
+      }
+      setAverages();
+      setFitness(it);
+    }
+    // setMenu(6);
+  }
+  std::cout << "here" << std::endl;
+}
+
+void EvolveClimber::simulate() {
+  for (vector<Muscle>::iterator it = m.begin(); it != m.end(); ++it)
+  {
+    it->applyForce(&n);
+  }
+  for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
+  {
+    it->applyGravity();
+    it->applyForces();
+    it->hitWalls();
+    it->doMath(&n);
+  }
+  for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
+  {
+    it->realizeMathValues();
+  }
+  averageNodeNausea = totalNodeNausea/n.size();
+  simulationTimer++;
+  timer++;
+}
+
+void EvolveClimber::setAverages() {
+  averageX = 0;
+  averageY = 0;
+  for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
+  {
+    averageX += it->getX();
+    averageY += it->getY();
+  }
+  averageX = averageX/n.size();
+  averageY = averageY/n.size();
+}
+
+void EvolveClimber::setGlobalVariables(vector<Creature>::iterator thisCreature) {
+  n.clear();
+  m.clear();
+  vector<Node>* c_n = thisCreature->getN();
+  vector<Muscle>* c_m = thisCreature->getM();
+  for (vector<Node>::iterator it = c_n->begin(); it != c_n->end(); ++it)
+  {
+    n.push_back(it->copyNode());
+  }
+  for (vector<Muscle>::iterator it = c_m->begin(); it != c_m->end(); ++it)
+  {
+    m.push_back(it->copyMuscle());
+  }
+  id = thisCreature->getId();
+  timer = 0;
+  camZoom = 0.01;
+  camX = 0;
+  camY = 0;
+  cTimer = thisCreature->getCreatureTimer();
+  simulationTimer = 0;
+  energy = baselineEnergy;
+  totalNodeNausea = 0;
+  averageNodeNausea = 0;
+}
+
+void EvolveClimber::setFitness(vector<Creature>::iterator it){
+  // it->setD(averageX*0.2); // Multiply by 0.2 because a meter is 5 units for some weird reason.
+  it->setD(averageX); // Multiply by 0.2 because a meter is 5 units for some weird reason.
 }
 
 void EvolveClimber::onClickCreate()
@@ -76,18 +162,20 @@ void EvolveClimber::onClickCreate()
 
 void EvolveClimber::toStableConfiguration(int nodeNum, int muscleNum) {
   for (int j = 0; j < 200; ++j) {
-    for (int i = 0; i < muscleNum; ++i) {
-      m.at(i).applyForce(i, n);
+    for (vector<Muscle>::iterator it = m.begin(); it != m.begin() + muscleNum; ++it)
+    {
+      it->applyForce(&n);
     }
-    for (int i = 0; i < nodeNum; ++i) {
-      n.at(i).applyForces();
+    for (vector<Node>::iterator it = n.begin(); it != n.begin() + nodeNum; ++it)
+    {
+      it->applyForces();
     }
   }
-  for (int i = 0; i < nodeNum; ++i) {
-    Node ni = n.at(i);
-    ni.setVx(0);
-    ni.setVy(0);
-  }
+  for (vector<Node>::iterator it = n.begin(); it != n.begin() + nodeNum; ++it)
+    {
+      it->setVx(0);
+      it->setVy(0);
+    }
 }
 
 void EvolveClimber::adjustToCenter(int nodeNum) {

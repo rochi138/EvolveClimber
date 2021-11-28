@@ -18,8 +18,8 @@ namespace EC
 		void applyGravity();
 		void pressAgainstGround(float groundY);
 		void hitWalls();
-		void doMath(int i, vector<Node> n);
-		void realizeMathValues(int i);
+		void doMath(vector<Node>* n);
+		void realizeMathValues();
 		Node copyNode();
 		Node modifyNode(float mutability, int nodeNum);
 

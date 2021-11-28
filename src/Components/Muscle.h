@@ -12,7 +12,7 @@ namespace EC
 
 		public:
 		Muscle(int taxon, int tc1, int tc2, float tlen, float trigidity);
-		void applyForce(int i, vector<Node> n);
+		void applyForce(vector<Node>* n);
 		Muscle copyMuscle();
 		Muscle modifyMuscle(float mutability, int nodeNum);
 
