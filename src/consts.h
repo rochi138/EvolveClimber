@@ -14,6 +14,9 @@ namespace EC
 // static const ImVec4 black = ImVec4(Color32::black);
 extern float windowSizeMultiplier;
 
+extern int minBar;
+extern int maxBar;
+
 extern vector<Creature> creatureDatabase;
 extern vector<Rectangle> rects;
 // PGraphics graphImage;

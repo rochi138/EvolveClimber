@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <stdio.h>
 #include <iostream>
 
@@ -10,15 +11,12 @@ EvolveClimber::EvolveClimber()
 : m_stepbystep(false)
 , m_stepbystepslow(false)
 , m_creatures(0)
-, m_minBar(-10)
-, m_maxBar(100)
-, m_barLen(m_maxBar-m_minBar)
 , m_gen(-1)
 , m_SEED(0)
-, m_barCounts(m_barLen)
-, m_speciesCounts(101, 500)
-, m_percentile(29)
-, m_topSpeciesCounts(10)
+, m_barCounts(0)
+, m_speciesCounts(0)
+, m_percentile(0)
+, m_topSpeciesCounts(0)
 {
     srand(m_SEED);
 }
@@ -39,9 +37,34 @@ void EvolveClimber::startASAP()
       setAverages();
       setFitness(it);
     }
+    // for (vector<Creature>::iterator it = c.begin(); it != c.end(); ++it)
+    // {
+    //   std::cout << "c " << it->getId() << " " << it->getD() << std::endl;
+    // }
     // setMenu(6);
+    genData();
   }
-  std::cout << "here" << std::endl;
+  // vector<Creature>::iterator it = c.begin();
+  // vector<Node>* it_n = it->getN();
+  // vector<Muscle>* it_m = it->getM();
+  // for (vector<Node>::iterator n_i = it_n->begin(); n_i != it_n->end(); ++n_i)
+  // {
+  //   std::cout << n_i->getX() << std::endl;
+
+  // }
+}
+
+void EvolveClimber::genData()
+{
+  struct {
+      bool operator()(Creature& a, Creature& b) const { return a.getD() > b.getD(); }
+  } customCompare;
+  vector<Creature> c2 = c;
+  std::sort(c2.begin(), c2.end(), customCompare);
+  for (vector<Creature>::iterator it = c2.begin(); it != c2.end(); ++it)
+  {
+    std::cout << "c2 " << it->getId() << " " << it->getD() << std::endl;
+  }
 }
 
 void EvolveClimber::simulate() {
@@ -118,8 +141,8 @@ void EvolveClimber::onClickCreate()
         int nodeNum = rInt(3,6);
         int muscleNum = rInt(nodeNum-1, nodeNum*3-6);
         for (int i = 0; i < nodeNum; ++i) {
-            Node newNode(rInt(-1, 1), rInt(-1, 1), 0, 0, 0.4, rInt(0, 1), rInt(0,1), 
-          floor(rInt(0,operationCount)),floor(rInt(0,nodeNum)),floor(rInt(0,nodeNum))); //replaced all nodes' sizes with 0.4, used to be random(0.1,1), random(0,1)
+            Node newNode(rFloat(-1, 1), rFloat(-1, 1), 0, 0, 0.4, rFloat(0, 1), rFloat(0,1), 
+          floor(rFloat(0,operationCount)),floor(rFloat(0,nodeNum)),floor(rFloat(0,nodeNum))); //replaced all nodes' sizes with 0.4, used to be random(0.1,1), random(0,1)
           n.push_back(newNode);
         }
         for (int i = 0; i < muscleNum; ++i) {

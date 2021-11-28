@@ -12,6 +12,8 @@ namespace EC
 
 // static const ImVec4 black = ImVec4(Color32::black);
 float windowSizeMultiplier = 0.8;
+int minBar = -10;
+int maxBar = 100;
 
 
 bool haveGround = true;

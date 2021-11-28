@@ -31,6 +31,7 @@ namespace EC
         void removeRandomMuscle();
         Creature copyCreature(int newID);
 
+        float getD() { return d; }
         int getId() { return id; }
         float getCreatureTimer() { return creatureTimer; }
         vector<Node>* getN() { return &n; }
