@@ -17,7 +17,6 @@ extern float windowSizeMultiplier;
 extern int minBar;
 extern int maxBar;
 
-extern vector<Creature> creatureDatabase;
 extern vector<Rectangle> rects;
 // PGraphics graphImage;
 // PGraphics screenImage;
@@ -60,7 +59,6 @@ extern float camX;
 extern float camY;
 extern int frames;
 extern int menu;
-extern int gen;
 extern float sliderX;
 extern int genSelected;
 extern bool drag;

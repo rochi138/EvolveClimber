@@ -17,8 +17,23 @@ EvolveClimber::EvolveClimber()
 , m_speciesCounts(0)
 , m_percentile(0)
 , m_topSpeciesCounts(0)
+, m_xAxis(0)
 {
-    srand(m_SEED);
+  srand(m_SEED);
+
+  array<float,29> beginPercentile = {};
+  array<int,110> beginBar = {};
+  array<int,101> beginSpecies = {};
+  for (int i = 0; i < 101; ++i)
+  {
+    beginSpecies[i] = 500;
+  }
+
+  m_percentile.push_back(beginPercentile);
+  m_barCounts.push_back(beginBar);
+  m_speciesCounts.push_back(beginSpecies);
+  m_topSpeciesCounts.push_back(0);
+  m_xAxis.push_back(0);
 }
 
 void EvolveClimber::startASAP()
@@ -42,7 +57,7 @@ void EvolveClimber::startASAP()
     //   std::cout << "c " << it->getId() << " " << it->getD() << std::endl;
     // }
     // setMenu(6);
-    genData();
+    compileGenData();
   }
   // vector<Creature>::iterator it = c.begin();
   // vector<Node>* it_n = it->getN();
@@ -54,17 +69,58 @@ void EvolveClimber::startASAP()
   // }
 }
 
-void EvolveClimber::genData()
+void EvolveClimber::compileGenData()
 {
-  struct {
-      bool operator()(Creature& a, Creature& b) const { return a.getD() > b.getD(); }
-  } customCompare;
-  vector<Creature> c2 = c;
-  std::sort(c2.begin(), c2.end(), customCompare);
+  c2 = c;
+  std::sort(c2.begin(), c2.end(), [](Creature& a, Creature& b) { return a.getD() > b.getD(); });
+
+  array<float,29> gen_percentiles;
+  for (int i = 0; i < 29; ++i)
+  {
+    gen_percentiles[i] = c2.at(p[i]).getD();
+  }
+
+  m_percentile.push_back(gen_percentiles);
+  m_creatureDatabase.push_back(c2.at(999).copyCreature(-1));
+  m_creatureDatabase.push_back(c2.at(499).copyCreature(-1));
+  m_creatureDatabase.push_back(c2.at(0).copyCreature(-1));
+
+  array<int,110> beginBar = {};
+  array<int,101> beginSpecies = {};
+
   for (vector<Creature>::iterator it = c2.begin(); it != c2.end(); ++it)
   {
-    std::cout << "c2 " << it->getId() << " " << it->getD() << std::endl;
+    int bar = floor(it->getD()*histBarsPerMeter-minBar);
+    if (bar >= 0 && bar < maxBar-minBar)
+    {
+      ++beginBar[bar];
+    }
+    int species = (it->getN()->size()%10)*10 + it->getM()->size()%10;
+    ++beginSpecies[species];
   }
+
+  array<int,101> beginSpeciesCounts = {};
+  int cum = 0;
+  int record = 0;
+  int holder = 0;
+  for (int i = 0; i < 100; i++) {
+    cum += beginSpecies[i];
+    beginSpeciesCounts[i+1] = cum;
+    if (beginSpecies[i] > record) {
+      record = beginSpecies[i];
+      holder = i;
+    }
+  }
+  m_speciesCounts.push_back(beginSpeciesCounts);
+  m_topSpeciesCounts.push_back(holder);
+  m_xAxis.push_back(m_gen+1);
+
+  // if (stepbystep) {
+  //   drawScreenImage(0);
+  //   setMenu(7);
+  // } else {
+  //   setMenu(10);
+  // }
 }
 
 void EvolveClimber::simulate() {
@@ -86,6 +142,62 @@ void EvolveClimber::simulate() {
   averageNodeNausea = totalNodeNausea/n.size();
   simulationTimer++;
   timer++;
+}
+
+void EvolveClimber::kill()
+{
+  for (int j = 0; j < 500; j++) {
+    float f = float(j)/1000;
+    float rand = (pow(rFloat(-1, 1), 3)+1)/2; //cube function
+    slowDies = (f <= rand);
+    int j2;
+    int j3;
+    if (slowDies) {
+      j2 = j;
+      j3 = 999-j;
+    } else {
+      j2 = 999-j;
+      j3 = j;
+    }
+    c2.at(j2).setAlive(true);
+    c2.at(j3).setAlive(true);
+  }
+  // if (stepbystep) {
+  //   drawScreenImage(2);
+  //   setMenu(11);
+  // } else {
+  //   setMenu(12);
+  // }
+}
+
+void EvolveClimber::reproduce()
+{
+  justGotBack = true;
+  for (vector<Creature>::iterator it = c2.begin(); it != c2.begin() + 500; ++it)
+  {
+    int j2 = it->getAlive() ? it - c2.begin() : 999-(it - c2.begin());
+    Creature cj = c2.at(j2);
+    Creature cj2 = c2.at(999-j2);
+    
+    c2.at(j2) = cj.copyCreature(cj.getId()+1000);        //duplicate
+    
+    c2.at(999-j2) = cj.modified(cj2.getId()+1000);   //mutated offspring 1
+    n = *c2.at(999-j2).getN();
+    m = *c2.at(999-j2).getM();
+    toStableConfiguration(n.size(), m.size());
+    adjustToCenter(n.size());
+  }
+  for (vector<Creature>::iterator it = c2.begin(); it != c2.end(); ++it)
+  {
+    c.at(it->getId()-(m_gen*1000)-1001) = it->copyCreature(-1);
+  }
+  // drawScreenImage(3);
+  ++m_gen;
+  // if (stepbystep) {
+  //   setMenu(13);
+  // } else {
+  //   setMenu(1);
+  // }
 }
 
 void EvolveClimber::setAverages() {
@@ -132,7 +244,7 @@ void EvolveClimber::setFitness(vector<Creature>::iterator it){
 
 void EvolveClimber::onClickCreate()
 {
-    m_gen = 1;
+    m_gen = 0;
     creatures = 0;
     for (int y = 0; y < 25; y++) {
       for (int x = 0; x < 40; x++) {

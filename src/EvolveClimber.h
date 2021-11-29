@@ -18,6 +18,8 @@ namespace EC
 
         void onClickCreate();
         void startASAP();
+        void kill();
+        void reproduce();
 
         void toStableConfiguration(int nodeNum, int muscleNum);
         void adjustToCenter(int nodeNum);
@@ -33,12 +35,15 @@ namespace EC
         vector<array<float,29>> m_percentile;
         vector<array<int,110>> m_barCounts;
         vector<array<int, 101>> m_speciesCounts;
+        vector<int> m_xAxis;
         vector<int> m_topSpeciesCounts;
         vector<Creature> c;
+        vector<Creature> c2;
         vector<Node> n;
         vector<Muscle> m;
+        vector<Creature> m_creatureDatabase;
 
-        void genData();
+        void compileGenData();
         void simulate();
         void setAverages();
         void setGlobalVariables(vector<Creature>::iterator thisCreature);

@@ -28,8 +28,8 @@ void ECIMGUI::onClickButton()
     {
         case 4:  break;
         case 5:  break;
-        case 6:  break;
-        case 7:  break;
+        case 6: m_evolveClimber->kill(); break;
+        case 7: m_evolveClimber->reproduce(); break;
         case 8:  break;
     }    
 
