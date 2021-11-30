@@ -24,6 +24,9 @@ namespace EC
         void toStableConfiguration(int nodeNum, int muscleNum);
         void adjustToCenter(int nodeNum);
 
+        vector<vector<float>>* getPercentile() { return &m_percentile; }
+        vector<float>* getXAxis() { return &m_xAxis; }
+
         private:        
         bool m_stepbystep;
         bool m_stepbystepslow;
@@ -32,10 +35,10 @@ namespace EC
         int m_SEED;
 
         // array lengths cannot be variables
-        vector<array<float,29>> m_percentile;
+        vector<vector<float>> m_percentile;
         vector<array<int,110>> m_barCounts;
         vector<array<int, 101>> m_speciesCounts;
-        vector<int> m_xAxis;
+        vector<float> m_xAxis;
         vector<int> m_topSpeciesCounts;
         vector<Creature> c;
         vector<Creature> c2;

@@ -21,7 +21,6 @@ EvolveClimber::EvolveClimber()
 {
   srand(m_SEED);
 
-  array<float,29> beginPercentile = {};
   array<int,110> beginBar = {};
   array<int,101> beginSpecies = {};
   for (int i = 0; i < 101; ++i)
@@ -29,11 +28,16 @@ EvolveClimber::EvolveClimber()
     beginSpecies[i] = 500;
   }
 
-  m_percentile.push_back(beginPercentile);
   m_barCounts.push_back(beginBar);
   m_speciesCounts.push_back(beginSpecies);
   m_topSpeciesCounts.push_back(0);
   m_xAxis.push_back(0);
+
+  for (int i = 0; i < 6; ++i)
+  {
+    vector<float> beginPercentile(1);
+    m_percentile.push_back(beginPercentile);
+  }
 }
 
 void EvolveClimber::startASAP()
@@ -74,13 +78,11 @@ void EvolveClimber::compileGenData()
   c2 = c;
   std::sort(c2.begin(), c2.end(), [](Creature& a, Creature& b) { return a.getD() > b.getD(); });
 
-  array<float,29> gen_percentiles;
-  for (int i = 0; i < 29; ++i)
+  for (vector<vector<float>>::iterator it = m_percentile.begin(); it != m_percentile.end(); ++it)
   {
-    gen_percentiles[i] = c2.at(p[i]).getD();
+    it->push_back(c2.at(p[it - m_percentile.begin()]).getD());
   }
 
-  m_percentile.push_back(gen_percentiles);
   m_creatureDatabase.push_back(c2.at(999).copyCreature(-1));
   m_creatureDatabase.push_back(c2.at(499).copyCreature(-1));
   m_creatureDatabase.push_back(c2.at(0).copyCreature(-1));

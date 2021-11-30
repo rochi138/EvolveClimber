@@ -106,20 +106,18 @@ void ECIMGUI::overviewMenu()
     ImGui::Button("Run until");
     ImGui::Button("Do X gen ASAP");
 
-    static float xs1[1001], ys1[1001];
-    for (int i = 0; i < 1001; ++i) {
-        xs1[i] = i * 0.001f;
-        ys1[i] = 0.5f + 0.5f * sinf(50 * xs1[i]);
-    }
-    static double xs2[11], ys2[11];
-    for (int i = 0; i < 11; ++i) {
-        xs2[i] = i * 0.1f;
-        ys2[i] = xs2[i] * xs2[i];
-    }
-    if (ImPlot::BeginPlot("Line Plot")) {
-        ImPlot::SetupAxes("x","f(x)");
-        ImPlot::PlotLine("sin(x)", xs1, ys1, 1001);
-        ImPlot::PlotLine("x^2", xs2, ys2, 11);
+    if (ImPlot::BeginPlot("Median Distance")) {
+        ImPlot::SetupAxes("Gen #","Distance (m)");
+
+        vector<vector<float>> percentile = *m_evolveClimber->getPercentile();
+        vector<float> xAxis = *m_evolveClimber->getXAxis();
+        int len = m_evolveClimber->getGen() +1;
+        
+        for (int i = 0; i < 6; ++i)
+        {
+            ImPlot::PlotLine(p_text[i].c_str(), &xAxis[0], &percentile[i][0], len);
+        }
+
         ImPlot::EndPlot();
     }
 
