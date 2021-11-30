@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <experimental/coroutine>
 #include <exception>
 #include <stdio.h>
 #include <iostream>
@@ -15,7 +14,8 @@ EvolveClimber::EvolveClimber()
 , m_stepbystepslow(false)
 , m_creatures(0)
 , m_gen(-1)
-, m_genToDo(1)
+, m_genToDo(0)
+, m_genToDoInput(1)
 , m_runUntilGen(1)
 , m_SEED(0)
 , m_barCounts(0)
@@ -45,46 +45,40 @@ EvolveClimber::EvolveClimber()
   }
 }
 
+void EvolveClimber::genCoroutine()
+{
+  --m_genToDo;
+  runGenASAP();
+}
 void EvolveClimber::onClickASAP()
+{
+  runGenASAP();
+  m_runUntilGen = m_gen + 1;
+}
+
+void EvolveClimber::runGenASAP()
 {
   testGen();
   kill();
   reproduce();
 }
 
-void EvolveClimber::onClickALAP()
-{
-  m_alap = true;
-  while (m_alap)
-  {
-    onClickASAP();
-  }
-}
-
 void EvolveClimber::onClickDoXGens()
 {
-  if (m_genToDo > 0)
+  if (m_genToDoInput > 0)
   {
-    while (m_genToDo > 0)
-    {
-      --m_genToDo;
-      onClickASAP();      
-    }
+    m_genToDo = m_genToDoInput;
   }
-  m_genToDo = 1;
+  m_runUntilGen = m_gen + m_genToDoInput + 1;
 }
 
 void EvolveClimber::onClickRunUntil()
 {
   if (m_runUntilGen > m_gen)
   {
-    while (m_gen < m_runUntilGen)
-    {
-      onClickASAP();
-    }
-    
+    m_genToDo = m_runUntilGen - m_gen;
   }
-  m_runUntilGen = m_gen + 1;
+  ++m_runUntilGen;
 }
 
 void EvolveClimber::testGen()
@@ -229,7 +223,6 @@ void EvolveClimber::reproduce()
   }
   // drawScreenImage(3);
   ++m_gen;
-  m_runUntilGen = m_gen + 1;
   // if (stepbystep) {
   //   setMenu(13);
   // } else {

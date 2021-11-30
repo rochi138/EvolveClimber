@@ -16,13 +16,15 @@ namespace EC
         public:
         EvolveClimber();
 
+        bool getRunCoroutine() { return m_genToDo > 0 || m_alap; }
         int getGen() { return m_gen; };
-        int* getGenToDo() { return &m_genToDo; }
+        int* getGenToDoInput() { return &m_genToDoInput; }
         int* getRunUntilGen() { return &m_runUntilGen; }
 
+        void genCoroutine();
         void onClickCreate();
         void onClickASAP();
-        void onClickALAP();
+        void onClickALAP() { m_alap = true; }
         void onClickStop() { m_alap = false; }
         void onClickDoXGens();
         void onClickRunUntil();
@@ -43,6 +45,7 @@ namespace EC
         int m_creatures;
         int m_gen;
         int m_genToDo;
+        int m_genToDoInput;
         int m_runUntilGen;
         int m_SEED;
 
@@ -59,10 +62,10 @@ namespace EC
         vector<Creature> m_creatureDatabase;
 
         void compileGenData();
+        void runGenASAP();
         void simulate();
         void setAverages();
         void setGlobalVariables(vector<Creature>::iterator thisCreature);
         void setFitness(vector<Creature>::iterator it);
-
     };
 }

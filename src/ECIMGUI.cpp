@@ -105,17 +105,17 @@ void ECIMGUI::overviewMenu()
     {
         m_evolveClimber->onClickASAP();
     }
-    // if (ImGui::Button("Do gens ALAP"))
-    // {
-    //     m_evolveClimber->onClickALAP();
-    // }
-    // if (ImGui::Button("STOP"))
-    // {
-    //     m_evolveClimber->onClickStop();
-    // }
+    if (ImGui::Button("Do gens ALAP"))
+    {
+        m_evolveClimber->onClickALAP();
+    }
+    if (ImGui::Button("STOP"))
+    {
+        m_evolveClimber->onClickStop();
+    }
     ImGui::Text("Do ");
     ImGui::SameLine();
-    ImGui::InputInt("gens ASAP", m_evolveClimber->getGenToDo());
+    ImGui::InputInt("gens ASAP", m_evolveClimber->getGenToDoInput());
     ImGui::SameLine();
     if (ImGui::Button("Go###DoXGensButton"))
     {
