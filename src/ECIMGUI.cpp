@@ -96,26 +96,51 @@ void ECIMGUI::overviewMenu()
     ImGui::Text("Generation %i", m_evolveClimber->getGen());
     ImGui::Text("Median Distance");
     ImGui::Button("Do 1 step-by-step generation");
-    ImGui::Button("Do 1 quick generation");
-    if (ImGui::Button("Do 1 gen ASAP"))
+    if (ImGui::Button("Do 1 quick generation"))
     {
         m_menu = 4;
-        m_evolveClimber->startASAP();
+        m_evolveClimber->testGen();
     }
-    ImGui::Button("Do gens ALAP");
-    ImGui::Button("Run until");
-    ImGui::Button("Do X gen ASAP");
+    if (ImGui::Button("Do 1 gen ASAP"))
+    {
+        m_evolveClimber->onClickASAP();
+    }
+    // if (ImGui::Button("Do gens ALAP"))
+    // {
+    //     m_evolveClimber->onClickALAP();
+    // }
+    // if (ImGui::Button("STOP"))
+    // {
+    //     m_evolveClimber->onClickStop();
+    // }
+    ImGui::Text("Do ");
+    ImGui::SameLine();
+    ImGui::InputInt("gens ASAP", m_evolveClimber->getGenToDo());
+    ImGui::SameLine();
+    if (ImGui::Button("Go###DoXGensButton"))
+    {
+        m_evolveClimber->onClickDoXGens();
+    }
+    
+    ImGui::Text("Run until Generation");
+    ImGui::SameLine();
+    ImGui::InputInt("##RunUntilNum", m_evolveClimber->getRunUntilGen());
+    ImGui::SameLine();
+    if (ImGui::Button("Go###RunUntilButton"))
+    {
+        m_evolveClimber->onClickRunUntil();
+    }
 
-    if (ImPlot::BeginPlot("Median Distance")) {
-        ImPlot::SetupAxes("Gen #","Distance (m)");
+    if (ImPlot::BeginPlot("Median Distance", ImVec2(-1,0), ImPlotFlags_NoMouseText)) {
+        ImPlot::SetupAxes("Gen #","Distance (m)", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
 
         vector<vector<float>> percentile = *m_evolveClimber->getPercentile();
         vector<float> xAxis = *m_evolveClimber->getXAxis();
         int len = m_evolveClimber->getGen() +1;
-        
-        for (int i = 0; i < 6; ++i)
+
+        for (vector<vector<float>>::iterator it = percentile.begin(); it != percentile.end(); ++it)
         {
-            ImPlot::PlotLine(p_text[i].c_str(), &xAxis[0], &percentile[i][0], len);
+            ImPlot::PlotLine(p_text[it - percentile.begin()].c_str(), &(*it)[0], len);
         }
 
         ImPlot::EndPlot();

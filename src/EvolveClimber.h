@@ -5,6 +5,8 @@
 
 #include <algorithm>
 #include <array>
+#include <experimental/coroutine>
+#include <iostream>
 #include "imgui.h"
 
 namespace EC
@@ -15,9 +17,16 @@ namespace EC
         EvolveClimber();
 
         int getGen() { return m_gen; };
+        int* getGenToDo() { return &m_genToDo; }
+        int* getRunUntilGen() { return &m_runUntilGen; }
 
         void onClickCreate();
-        void startASAP();
+        void onClickASAP();
+        void onClickALAP();
+        void onClickStop() { m_alap = false; }
+        void onClickDoXGens();
+        void onClickRunUntil();
+        void testGen();
         void kill();
         void reproduce();
 
@@ -28,10 +37,13 @@ namespace EC
         vector<float>* getXAxis() { return &m_xAxis; }
 
         private:        
+        bool m_alap;
         bool m_stepbystep;
         bool m_stepbystepslow;
         int m_creatures;
         int m_gen;
+        int m_genToDo;
+        int m_runUntilGen;
         int m_SEED;
 
         // array lengths cannot be variables
@@ -51,5 +63,6 @@ namespace EC
         void setAverages();
         void setGlobalVariables(vector<Creature>::iterator thisCreature);
         void setFitness(vector<Creature>::iterator it);
+
     };
 }

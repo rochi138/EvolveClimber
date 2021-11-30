@@ -1,4 +1,6 @@
 #include <algorithm>
+#include <experimental/coroutine>
+#include <exception>
 #include <stdio.h>
 #include <iostream>
 
@@ -8,10 +10,13 @@
 using namespace EC;
 
 EvolveClimber::EvolveClimber()
-: m_stepbystep(false)
+: m_alap(false)
+, m_stepbystep(false)
 , m_stepbystepslow(false)
 , m_creatures(0)
 , m_gen(-1)
+, m_genToDo(1)
+, m_runUntilGen(1)
 , m_SEED(0)
 , m_barCounts(0)
 , m_speciesCounts(0)
@@ -33,14 +38,56 @@ EvolveClimber::EvolveClimber()
   m_topSpeciesCounts.push_back(0);
   m_xAxis.push_back(0);
 
-  for (int i = 0; i < 6; ++i)
+  for (int i = 0; i < 5; ++i)
   {
     vector<float> beginPercentile(1);
     m_percentile.push_back(beginPercentile);
   }
 }
 
-void EvolveClimber::startASAP()
+void EvolveClimber::onClickASAP()
+{
+  testGen();
+  kill();
+  reproduce();
+}
+
+void EvolveClimber::onClickALAP()
+{
+  m_alap = true;
+  while (m_alap)
+  {
+    onClickASAP();
+  }
+}
+
+void EvolveClimber::onClickDoXGens()
+{
+  if (m_genToDo > 0)
+  {
+    while (m_genToDo > 0)
+    {
+      --m_genToDo;
+      onClickASAP();      
+    }
+  }
+  m_genToDo = 1;
+}
+
+void EvolveClimber::onClickRunUntil()
+{
+  if (m_runUntilGen > m_gen)
+  {
+    while (m_gen < m_runUntilGen)
+    {
+      onClickASAP();
+    }
+    
+  }
+  m_runUntilGen = m_gen + 1;
+}
+
+void EvolveClimber::testGen()
 {
   creaturesTested = 0;
   setGlobalVariables(c.begin() + creaturesTested);
@@ -56,21 +103,8 @@ void EvolveClimber::startASAP()
       setAverages();
       setFitness(it);
     }
-    // for (vector<Creature>::iterator it = c.begin(); it != c.end(); ++it)
-    // {
-    //   std::cout << "c " << it->getId() << " " << it->getD() << std::endl;
-    // }
-    // setMenu(6);
     compileGenData();
   }
-  // vector<Creature>::iterator it = c.begin();
-  // vector<Node>* it_n = it->getN();
-  // vector<Muscle>* it_m = it->getM();
-  // for (vector<Node>::iterator n_i = it_n->begin(); n_i != it_n->end(); ++n_i)
-  // {
-  //   std::cout << n_i->getX() << std::endl;
-
-  // }
 }
 
 void EvolveClimber::compileGenData()
@@ -195,6 +229,7 @@ void EvolveClimber::reproduce()
   }
   // drawScreenImage(3);
   ++m_gen;
+  m_runUntilGen = m_gen + 1;
   // if (stepbystep) {
   //   setMenu(13);
   // } else {

@@ -17,6 +17,8 @@ namespace EC
         private:
         bool m_showSettings;
         int m_menu;
+        int m_genToDo;
+        int m_runUntilGen;
 
         EvolveClimber* m_evolveClimber;
 
