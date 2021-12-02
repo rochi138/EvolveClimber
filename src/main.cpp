@@ -48,10 +48,13 @@ std::experimental::coroutine_handle<> h;
   ReturnObject counter(std::experimental::coroutine_handle<> *continuation_out)
   {
       Awaiter a{continuation_out};
-      for (unsigned i = 0;; ++i) {
+      while (true) {
           co_await a;
-          std::cout << "counter: " << i << std::endl;
-          evolveClimber->genCoroutine();
+          evolveClimber->testGen();
+          co_await a;
+          evolveClimber->kill();
+          co_await a;
+          evolveClimber->reproduce();
       }
   };
 #pragma endregion

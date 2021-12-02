@@ -52,7 +52,7 @@ void EvolveClimber::genCoroutine()
 }
 void EvolveClimber::onClickASAP()
 {
-  runGenASAP();
+  m_genToDo = 1;
   m_runUntilGen = m_gen + 1;
 }
 
@@ -223,6 +223,7 @@ void EvolveClimber::reproduce()
   }
   // drawScreenImage(3);
   ++m_gen;
+  --m_genToDo;
   // if (stepbystep) {
   //   setMenu(13);
   // } else {
