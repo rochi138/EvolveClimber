@@ -1,8 +1,8 @@
 #include <algorithm>
-#include <exception>
 #include <stdio.h>
 #include <iostream>
 
+#include "consts.h"
 #include "EvolveClimber.h"
 #include "HelperFunctions.h"
 
@@ -45,22 +45,10 @@ EvolveClimber::EvolveClimber()
   }
 }
 
-void EvolveClimber::genCoroutine()
-{
-  --m_genToDo;
-  runGenASAP();
-}
 void EvolveClimber::onClickASAP()
 {
   m_genToDo = 1;
   m_runUntilGen = m_gen + 1;
-}
-
-void EvolveClimber::runGenASAP()
-{
-  testGen();
-  kill();
-  reproduce();
 }
 
 void EvolveClimber::onClickDoXGens()

@@ -1,12 +1,9 @@
 #pragma once
 
-#include "consts.h"
 #include "Components/Creature.h"
 
-#include <algorithm>
 #include <array>
-#include <experimental/coroutine>
-#include <iostream>
+#include <vector>
 #include "imgui.h"
 
 namespace EC
@@ -21,7 +18,6 @@ namespace EC
         int* getGenToDoInput() { return &m_genToDoInput; }
         int* getRunUntilGen() { return &m_runUntilGen; }
 
-        void genCoroutine();
         void onClickCreate();
         void onClickASAP();
         void onClickALAP() { m_alap = true; }
@@ -62,7 +58,6 @@ namespace EC
         vector<Creature> m_creatureDatabase;
 
         void compileGenData();
-        void runGenASAP();
         void simulate();
         void setAverages();
         void setGlobalVariables(vector<Creature>::iterator thisCreature);
