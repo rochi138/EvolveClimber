@@ -58,7 +58,7 @@ namespace EC
         vector<Creature> m_creatureDatabase;
 
         
-        void simulate();
+        void simulate(vector<Node> &n, vector<Muscle> &m);
         float calcAverages();
         void setGlobalVariables(vector<Creature>::iterator thisCreature);
     };

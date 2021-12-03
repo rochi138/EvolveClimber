@@ -79,7 +79,10 @@ void EvolveClimber::testGen()
   {
     setGlobalVariables(it);
     for (int s = 0; s < 900; s++) {
-      simulate();
+      simulate(n, m);
+      averageNodeNausea = totalNodeNausea/n.size();
+      simulationTimer++;
+      timer++;
     }
     it->setD(calcAverages());
   }
@@ -138,7 +141,7 @@ void EvolveClimber::compileGenData()
   // }
 }
 
-void EvolveClimber::simulate() {
+void EvolveClimber::simulate(vector<Node> &n, vector<Muscle> &m) {
   for (vector<Muscle>::iterator it = m.begin(); it != m.end(); ++it)
   {
     it->applyForce(&n);
@@ -154,9 +157,6 @@ void EvolveClimber::simulate() {
   {
     it->realizeMathValues();
   }
-  averageNodeNausea = totalNodeNausea/n.size();
-  simulationTimer++;
-  timer++;
 }
 
 void EvolveClimber::kill()
