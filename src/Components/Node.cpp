@@ -139,18 +139,18 @@ namespace EC
 
 		switch (operation)
 		{
-			case 0: break; // constant
-			case 1: valueToBe = simulationTimer/60.0; break; // time
-			case 2: valueToBe = x*0.2; break; // x - coordinate
-			case 3: valueToBe = -y*0.2; break; // y - coordinate
-			case 4: valueToBe = axonValue1+axonValue2; break; // plus
-			case 5: valueToBe = axonValue1-axonValue2; break; // minus
-			case 6: valueToBe = axonValue1*axonValue2; break; // times
-			case 7: valueToBe = axonValue1/axonValue2; break; // divide
-			case 8: valueToBe = fmod(axonValue1, axonValue2); break; // modulus
-			case 9: valueToBe = sin(axonValue1); break; // sin
-			case 10: valueToBe = 1/(1+pow(2.71828182846,-axonValue1)); break; // sig
-			case 11: valueToBe = pressure; break; // pressure
+			case 0: break; 														// constant
+			case 1: valueToBe = simulationTimer/60.0; break; 					// time
+			case 2: valueToBe = x*0.2; break; 									// x - coordinate
+			case 3: valueToBe = -y*0.2; break; 									// y - coordinate
+			case 4: valueToBe = axonValue1+axonValue2; break; 					// plus
+			case 5: valueToBe = axonValue1-axonValue2; break; 					// minus
+			case 6: valueToBe = axonValue1*axonValue2; break; 					// times
+			case 7: valueToBe = axonValue1/axonValue2; break; 					// divide
+			case 8: valueToBe = fmod(axonValue1, axonValue2); break; 			// modulus
+			case 9: valueToBe = sin(axonValue1); break; 						// sin
+			case 10: valueToBe = 1/(1+pow(2.71828182846,-axonValue1)); break; 	// sig
+			case 11: valueToBe = pressure; break; 								// pressure
 		}
 	}
 	void Node::realizeMathValues(){

@@ -201,20 +201,20 @@ void EvolveClimber::reproduce()
     c2.at(999-j2) = cj.modified(cj2.getId()+1000);   //mutated offspring 1
     n = *c2.at(999-j2).getN();
     m = *c2.at(999-j2).getM();
-    toStableConfiguration();
-    adjustToCenter();  
+    toStableConfiguration(n, m);
+    adjustToCenter(n);  
   }
+
   float b = 0;
-    vector<Node> temp_n = *(m_creaturePopulation.begin()->getN());
-    for (vector<Node>::iterator it = temp_n.begin(); it != temp_n.end(); ++it)
-    {
-      b += it->getX();
-    }
-    std::cout << "average x: " << b << std::endl;
+  vector<Node> temp_n = *(m_creaturePopulation.begin()->getN());
+  for (vector<Node>::iterator it = temp_n.begin(); it != temp_n.end(); ++it)
+  {
+    b += it->getX();
+  }
+  std::cout << "average x: " << b << std::endl;
   
   for (vector<Creature>::iterator it = c2.begin(); it != c2.end(); ++it)
   {
-    std::cout << it->getId() << std::endl;
     m_creaturePopulation.at(it->getId()-m_gen*1000) = it->copyCreature(-1);
   }
   // drawScreenImage(3);
@@ -266,52 +266,44 @@ void EvolveClimber::setGlobalVariables(vector<Creature>::iterator thisCreature) 
 
 void EvolveClimber::onClickCreate()
 {
-    m_gen = 0;
-    for (int id = 0; id < 1000; ++id) {
-      n.clear();
-      m.clear();
-      int nodeNum = rInt(3,6);
-      int muscleNum = rInt(nodeNum-1, nodeNum*3-6);
-      for (int i = 0; i < nodeNum; ++i) {
-          Node newNode(rFloat(-1.0f, 1.0f), rFloat(-1.0f, 1.0f), 0, 0, 0.4, rFloat(0.0f, 1.0f), rFloat(0.0f,1.0f), 
-        floor(rFloat(0.0f,operationCount)),floor(rFloat(0.0f,nodeNum)),floor(rFloat(0.0f,nodeNum))); //replaced all nodes' sizes with 0.4, used to be random(0.1,1), random(0,1)
-        n.push_back(newNode);
-      }
-      for (int i = 0; i < muscleNum; ++i) {
-        int tc1 = 0;
-        int tc2 = 0;
-        int taxon = getNewMuscleAxon(nodeNum);
-        if (i < nodeNum-1) {
-          tc1 = i;
-          tc2 = i+1;
-        } else {
-          tc1 = rInt(0, nodeNum);
-          tc2 = tc1;
-          while (tc2 == tc1) {
-            tc2 = rInt(0, nodeNum);
-          }
-        }
-        float s = i >= 10 ? 0.3312 : 0.8;
-        float len = rFloat(0.5f,1.5f);
-        Muscle newMuscle(taxon, tc1, tc2, len, rFloat(0.02f, 0.08f));
-        m.push_back(newMuscle);
-      }
-      toStableConfiguration();
-      adjustToCenter();
-      float heartbeat = rFloat(40.0f, 80.0f);
+  m_gen = 0;
+  for (int id = 0; id < 1000; ++id) {
+    vector<Node> create_n;
+    vector<Muscle> create_m;
+    int nodeNum = rInt(3,6);
+    int muscleNum = rInt(nodeNum-1, nodeNum*3-6);
 
-      vector<Node> newN(n);      
-      vector<Muscle> newM(m);
-      Creature newCreature(id, newN, newM, 0, true, heartbeat, 1.0);
-      newCreature.checkForOverlap();
-      newCreature.checkForLoneNodes();
-      newCreature.checkForBadAxons();
-      m_creaturePopulation.push_back(newCreature);
-      // drawCreature(c[y*40+x], x*3+5.5, y*2.5+3, 0);
+    for (int i = 0; i < nodeNum; ++i) {
+        Node newNode(rFloat(-1.0f, 1.0f), rFloat(-1.0f, 1.0f), 0, 0, 0.4, rFloat(0.0f, 1.0f), rFloat(0.0f,1.0f), 
+      floor(rFloat(0.0f,operationCount)),floor(rFloat(0.0f,nodeNum)),floor(rFloat(0.0f,nodeNum))); //replaced all nodes' sizes with 0.4, used to be random(0.1,1), random(0,1)
+      create_n.push_back(newNode);
     }
+
+    for (int i = 0; i < muscleNum; ++i) {
+      int tc1 = i < nodeNum-1 ? i : rInt(0, nodeNum);
+      int tc2 = i < nodeNum-1 ? i+1 : tc1;        
+      while (tc2 == tc1) {
+        tc2 = rInt(0, nodeNum);
+      }
+
+      // float s = i >= 10 ? 0.3312 : 0.8;
+      Muscle newMuscle(getNewMuscleAxon(nodeNum), tc1, tc2, rFloat(0.5f,1.5f), rFloat(0.02f, 0.08f));
+      create_m.push_back(newMuscle);
+    }
+    
+    toStableConfiguration(create_n, create_m);
+    adjustToCenter(create_n);
+
+    Creature newCreature(id, create_n, create_m, 0, true, rFloat(40.0f, 80.0f), 1.0);
+    newCreature.checkForOverlap();
+    newCreature.checkForLoneNodes();
+    newCreature.checkForBadAxons();
+    m_creaturePopulation.push_back(newCreature);
+    // drawCreature(c[y*40+x], x*3+5.5, y*2.5+3, 0);
+  }
 }
 
-void EvolveClimber::toStableConfiguration() {
+void EvolveClimber::toStableConfiguration(vector<Node> &n, vector<Muscle> &m) {
   for (int j = 0; j < 200; ++j) {
     for (vector<Muscle>::iterator it = m.begin(); it != m.end(); ++it)
     {
@@ -323,13 +315,13 @@ void EvolveClimber::toStableConfiguration() {
     }
   }
   for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
-    {
-      it->setVx(0.0f);
-      it->setVy(0.0f);
-    }
+  {
+    it->setVx(0.0f);
+    it->setVy(0.0f);
+  }
 }
 
-void EvolveClimber::adjustToCenter() {
+void EvolveClimber::adjustToCenter(vector<Node> &n) {
   float avx = 0;
   float lowY = -1000;
   for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)

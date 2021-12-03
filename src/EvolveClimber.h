@@ -29,8 +29,8 @@ namespace EC
         void kill();
         void reproduce();
 
-        void toStableConfiguration();
-        void adjustToCenter();
+        void toStableConfiguration(vector<Node> &n, vector<Muscle> &m);
+        void adjustToCenter(vector<Node> &n);
 
         vector<vector<float>>* getPercentile() { return &m_percentile; }
         vector<float>* getXAxis() { return &m_xAxis; }
