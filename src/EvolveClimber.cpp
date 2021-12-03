@@ -161,21 +161,14 @@ void EvolveClimber::simulate(vector<Node> &n, vector<Muscle> &m) {
 
 void EvolveClimber::kill()
 {
-  for (int j = 0; j < 500; j++) {
-    float f = float(j)/1000;
+  for (vector<Creature>::iterator it = c2.begin(); it != c2.begin() + 500; ++it)
+  {
+    float f = float(it - c2.begin())/1000;
     float rand = (pow(rFloat(-1.0f, 1.0f), 3.0f)+1.0f)/2.0f; //cube function
-    slowDies = (f <= rand);
-    int j2;
-    int j3;
-    if (slowDies) {
-      j2 = j;
-      j3 = 999-j;
-    } else {
-      j2 = 999-j;
-      j3 = j;
-    }
-    c2.at(j2).setAlive(true);
-    c2.at(j3).setAlive(false);
+    vector<Creature>::iterator survivor = f <= rand ? it : c2.end() - (it - c2.begin() + 1);
+    vector<Creature>::iterator dead = f <= rand ? c2.end() - (it - c2.begin() + 1) : it;
+    survivor->setAlive(true);
+    dead->setAlive(false);
   }
   // if (stepbystep) {
   //   drawScreenImage(2);
