@@ -185,17 +185,14 @@ void EvolveClimber::reproduce()
   justGotBack = true;
   for (vector<Creature>::iterator it = c2.begin(); it != c2.begin() + 500; ++it)
   {
-    int j2 = it->getAlive() ? it - c2.begin() : 999-(it - c2.begin());
-    Creature cj = c2.at(j2);
-    Creature cj2 = c2.at(999-j2);
-    
-    c2.at(j2) = cj.copyCreature(cj.getId()+1000);        //duplicate
-    
-    c2.at(999-j2) = cj.modified(cj2.getId()+1000);   //mutated offspring 1
-    n = *c2.at(999-j2).getN();
-    m = *c2.at(999-j2).getM();
-    toStableConfiguration(n, m);
-    adjustToCenter(n);  
+    vector<Creature>::iterator original = it->getAlive() ? it: c2.end() - (it - c2.begin() + 1);
+    vector<Creature>::iterator mutant = it->getAlive() ? c2.end() - (it - c2.begin() + 1) : it;
+
+    *original = original->copyCreature(original->getId()+1000);   //duplicate
+    *mutant = original->modified(mutant->getId()+1000);       //mutated offspring 1
+
+    toStableConfiguration(*mutant->getN(), *mutant->getM());
+    adjustToCenter(*mutant->getN());  
   }
 
   float b = 0;
