@@ -52,6 +52,8 @@ std::experimental::coroutine_handle<> h;
           co_await a;
           evolveClimber->testGen();
           co_await a;
+          evolveClimber->compileGenData();
+          co_await a;
           evolveClimber->kill();
           co_await a;
           evolveClimber->reproduce();
