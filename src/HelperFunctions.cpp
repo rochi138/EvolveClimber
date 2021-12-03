@@ -15,7 +15,7 @@ namespace EC{
 		return r*(max-min) + min;
 	}
 	float r() {
-		return pow(rFloat(-1, 1), 19);
+		return pow(rFloat(-1.0f, 1.0f), 19.0f);
 	}
 	int getNewMuscleAxon(int nodeNum){
 		if(rFloat(0,1) < 0.5){

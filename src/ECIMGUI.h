@@ -39,5 +39,9 @@ namespace EC
         void drawSkipButton();
         void drawOtherButtons();
 
+        void overviewMenuLeftColumn();
+        
+        void overviewMenuRightColumn();
+        void overviewMenuRightButtons();
     };
 }

@@ -166,7 +166,7 @@ void EvolveClimber::kill()
 {
   for (int j = 0; j < 500; j++) {
     float f = float(j)/1000;
-    float rand = (pow(rFloat(-1, 1), 3)+1)/2; //cube function
+    float rand = (pow(rFloat(-1.0f, 1.0f), 3.0f)+1.0f)/2.0f; //cube function
     slowDies = (f <= rand);
     int j2;
     int j3;
@@ -178,7 +178,7 @@ void EvolveClimber::kill()
       j3 = j;
     }
     c2.at(j2).setAlive(true);
-    c2.at(j3).setAlive(true);
+    c2.at(j3).setAlive(false);
   }
   // if (stepbystep) {
   //   drawScreenImage(2);
@@ -203,8 +203,15 @@ void EvolveClimber::reproduce()
     n = *c2.at(999-j2).getN();
     m = *c2.at(999-j2).getM();
     toStableConfiguration(n.size(), m.size());
-    adjustToCenter(n.size());
+    adjustToCenter(n.size());  
   }
+  float b = 0;
+    vector<Node> temp_n = *(c.begin()->getN());
+    for (vector<Node>::iterator it = temp_n.begin(); it != temp_n.end(); ++it)
+    {
+      b += it->getX();
+    }
+    std::cout << "average x: " << b << std::endl;
   for (vector<Creature>::iterator it = c2.begin(); it != c2.end(); ++it)
   {
     c.at(it->getId()-(m_gen*1000)-1001) = it->copyCreature(-1);
@@ -327,8 +334,8 @@ void EvolveClimber::toStableConfiguration(int nodeNum, int muscleNum) {
   }
   for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
     {
-      it->setVx(0);
-      it->setVy(0);
+      it->setVx(0.0f);
+      it->setVy(0.0f);
     }
 }
 
@@ -342,7 +349,7 @@ void EvolveClimber::adjustToCenter(int nodeNum) {
         lowY = it->getY()+it->getM()/2;
     }
   }
-  avx /= nodeNum;
+  avx /= n.size();
   for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
   {
     it->incrementX(-avx);
