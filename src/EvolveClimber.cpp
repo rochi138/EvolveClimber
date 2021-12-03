@@ -272,8 +272,8 @@ void EvolveClimber::onClickCreate()
         int nodeNum = rInt(3,6);
         int muscleNum = rInt(nodeNum-1, nodeNum*3-6);
         for (int i = 0; i < nodeNum; ++i) {
-            Node newNode(rFloat(-1, 1), rFloat(-1, 1), 0, 0, 0.4, rFloat(0, 1), rFloat(0,1), 
-          floor(rFloat(0,operationCount)),floor(rFloat(0,nodeNum)),floor(rFloat(0,nodeNum))); //replaced all nodes' sizes with 0.4, used to be random(0.1,1), random(0,1)
+            Node newNode(rFloat(-1.0f, 1.0f), rFloat(-1.0f, 1.0f), 0, 0, 0.4, rFloat(0.0f, 1.0f), rFloat(0.0f,1.0f), 
+          floor(rFloat(0.0f,operationCount)),floor(rFloat(0.0f,nodeNum)),floor(rFloat(0.0f,nodeNum))); //replaced all nodes' sizes with 0.4, used to be random(0.1,1), random(0,1)
           n.push_back(newNode);
         }
         for (int i = 0; i < muscleNum; ++i) {
@@ -294,15 +294,15 @@ void EvolveClimber::onClickCreate()
           if (i >= 10) {
             s *= 1.414;
           }
-          float len = rFloat(0.5,1.5);
-          Muscle newMuscle(taxon, tc1, tc2, len, rFloat(0.02, 0.08));
+          float len = rFloat(0.5f,1.5f);
+          Muscle newMuscle(taxon, tc1, tc2, len, rFloat(0.02f, 0.08f));
           m.push_back(newMuscle);
         }
         toStableConfiguration(nodeNum, muscleNum);
         adjustToCenter(nodeNum);
         float heartbeat = rFloat(40.0f, 80.0f);
 
-        vector<Node> newN(n);
+        vector<Node> newN(n);      
         vector<Muscle> newM(m);
         Creature newCreature(y*40+x+1, newN, newM, 0, true, heartbeat, 1.0);
         newCreature.checkForOverlap();
@@ -316,16 +316,16 @@ void EvolveClimber::onClickCreate()
 
 void EvolveClimber::toStableConfiguration(int nodeNum, int muscleNum) {
   for (int j = 0; j < 200; ++j) {
-    for (vector<Muscle>::iterator it = m.begin(); it != m.begin() + muscleNum; ++it)
+    for (vector<Muscle>::iterator it = m.begin(); it != m.end(); ++it)
     {
       it->applyForce(&n);
     }
-    for (vector<Node>::iterator it = n.begin(); it != n.begin() + nodeNum; ++it)
+    for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
     {
       it->applyForces();
     }
   }
-  for (vector<Node>::iterator it = n.begin(); it != n.begin() + nodeNum; ++it)
+  for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
     {
       it->setVx(0);
       it->setVy(0);

@@ -41,12 +41,12 @@ namespace EC
 		if (vx > 0) {
 			vx -= f*dif*FRICTION;
 			if (vx < 0) {
-			vx = 0;
+				vx = 0;
 			}
 		} else {
 			vx += f*dif*FRICTION;
 			if (vx > 0) {
-			vx = 0;
+				vx = 0;
 			}
 		}
 	}
