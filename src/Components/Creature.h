@@ -24,7 +24,6 @@ namespace EC
 
         void checkForOverlap();
         void checkForLoneNodes();
-        void checkForBadAxons();
         void addRandomNode();
         void addRandomMuscle(int tc1, int tc2);
         void removeRandomNode();

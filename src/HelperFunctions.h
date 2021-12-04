@@ -8,4 +8,5 @@ namespace EC{
 	int getNewMuscleAxon(int nodeNum);
 	float dist(float x1, float y1, float x2 = 0.0f, float y2 = 0.0f);
 	float toMuscleUsable(float f);
+	bool isItContracted(float rtime1, float rtime2);
 }

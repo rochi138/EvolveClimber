@@ -23,30 +23,31 @@ namespace EC
         mutability = tmut;
     }       
     Creature Creature::modified(int id) {
-        Creature modifiedCreature(id, 
-        vector<Node>(), vector<Muscle>(), 0, true, creatureTimer+r()*16*mutability, min(mutability*rFloat(0.8, 1.25), 2.0f));
+        vector<Node> mod_n;
+        vector<Muscle> mod_m;
         int n_size = n.size();
         for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it) {
-            modifiedCreature.n.push_back(it->modifyNode(mutability,n_size));
+            mod_n.push_back(it->modifyNode(mutability,n_size));
         }
         for (vector<Muscle>::iterator it = m.begin(); it != m.end(); ++it) {
-            modifiedCreature.m.push_back(it->modifyMuscle(mutability,n_size));
+            mod_m.push_back(it->modifyMuscle(mutability,n_size));
         }
-        if (rFloat(0, 1) < bigMutationChance*mutability || n.size() <= 2) { //Add a node
+
+        Creature modifiedCreature(id, mod_n, mod_m, 0.0f, true, creatureTimer+r()*16.0f*mutability, min(mutability*rFloat(0.8f, 1.25f), 2.0f));
+        if (rFloat(0.0f, 1.0f) < bigMutationChance*mutability || n.size() <= 2) { //Add a node
         modifiedCreature.addRandomNode();
         }
-        if (rFloat(0, 1) < bigMutationChance*mutability) { //Add a muscle
+        if (rFloat(0.0f, 1.0f) < bigMutationChance*mutability) { //Add a muscle
         modifiedCreature.addRandomMuscle(-1, -1);
         }
-        if (rFloat(0, 1) < bigMutationChance*mutability && modifiedCreature.n.size() >= 4) { //Remove a node
+        if (rFloat(0.0f, 1.0f) < bigMutationChance*mutability && modifiedCreature.n.size() >= 4) { //Remove a node
         modifiedCreature.removeRandomNode();
         }
-        if (rFloat(0, 1) < bigMutationChance*mutability && modifiedCreature.m.size() >= 2) { //Remove a muscle
+        if (rFloat(0.0f, 1.0f) < bigMutationChance*mutability && modifiedCreature.m.size() >= 2) { //Remove a muscle
         modifiedCreature.removeRandomMuscle();
         }
         modifiedCreature.checkForOverlap();
         modifiedCreature.checkForLoneNodes();
-        modifiedCreature.checkForBadAxons();
         return modifiedCreature;
     }
     void Creature::checkForOverlap() {
@@ -86,85 +87,28 @@ namespace EC
                     }
                 }
                 if (connections <= 1) {
-                    int newConnectionNode = floor(rFloat(0, n_size));
+                    int newConnectionNode = floor(rFloat(0.0f, (float)n_size));
                     while (newConnectionNode == i || newConnectionNode == connectedTo) {
-                        newConnectionNode = floor(rFloat(0, n_size));
+                        newConnectionNode = floor(rFloat(0.0f, (float)n_size));
                     }
                     addRandomMuscle(i, newConnectionNode);
                 }
             }
         }
     }
-    void Creature::checkForBadAxons(){
-        int n_size = n.size();
-        for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
-        {
-            if(it->getAxon1() >= n_size){
-                it->setAxon1(rand() % n_size);
-            }
-            if(it->getAxon2() >= n_size){
-                it->setAxon2(rand() % n_size);
-            }
-        }
-
-        for (vector<Muscle>::iterator it = m.begin(); it != m.end(); ++it)
-        {
-            if(it->getAxon() >= n_size){
-                it->setAxon(getNewMuscleAxon(n_size));
-            }
-        }
-
-        for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
-        {
-            it->setSafeInput(operationAxons[it->getOperation()] == 0);
-        }
-
-        int iterations = 0;
-        bool didSomething = false;
-        
-        while(iterations < 1000){
-            didSomething = false;
-            for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
-            {
-                if (!it->getSafeInput())
-                {
-                    vector<Node>::iterator n_begin = n.begin();
-                    if((operationAxons[it->getOperation()] == 1 && (n_begin + it->getAxon1())->getSafeInput()) ||
-                    (operationAxons[it->getOperation()] == 2 && (n_begin + it->getAxon1())->getSafeInput() && (n_begin + it->getAxon2())->getSafeInput())){
-                        it->setSafeInput(true);
-                        didSomething = true;
-                    }
-                }
-            }
-            if(!didSomething){
-                iterations = 10000;
-            }
-        }
-
-        for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
-        {
-            if(!it->getSafeInput()){ // This node doesn't get its input from a safe place.  CLEANSE IT.
-                it->setOperation(0);
-                it->setValue(rFloat(0,1));
-            }
-        }
-    }
     void Creature::addRandomNode() {
-        int parentNode = floor(rFloat(0, n.size()));
-        float ang1 = rFloat(0, 2*M_PI);
-        float distance = sqrt(rFloat(0, 1));
-        float x = n.at(parentNode).getX()+cos(ang1)*0.5*distance;
-        float y = n.at(parentNode).getY()+sin(ang1)*0.5*distance;
+        int parentNode = floor(rFloat(0.0f, (float)n.size()));
+        float ang1 = rFloat(0.0f, 2*M_PI);
+        float distance = sqrt(rFloat(0.0f, 1.0f));
+        float x = n.at(parentNode).getX()+cos(ang1)*0.5f*distance;
+        float y = n.at(parentNode).getY()+sin(ang1)*0.5f*distance;
         
-        int newNodeCount = n.size()+1;
-        
-        Node newNode(x, y, 0, 0, 0.4, rFloat(0, 1), rFloat(0,1), floor(rFloat(0,operationCount)),
-        floor(rFloat(0,newNodeCount)),floor(rFloat(0,newNodeCount))); //random(0.1,1),random(0,1)
+        Node newNode(x, y, 0.0f, 0.0f, 0.4f, rFloat(0.0f, 1.0f)); //random(0.1,1),random(0,1)
         n.push_back(newNode);
         int nextClosestNode = 0;
-        float record = 100000;
+        float record = 100000.0f;
 
-        for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
+        for (vector<Node>::iterator it = n.begin(); it != n.end()-1; ++it)
         {
             int i = it - n.begin();
             if ( i != parentNode)
@@ -175,25 +119,43 @@ namespace EC
                 }
             }
         }
+        if (nextClosestNode == n.size() -1)
+            std::cout << "nextClosestNode" << std::endl;
         addRandomMuscle(parentNode, n.size()-1);
         addRandomMuscle(nextClosestNode, n.size()-1);
     }
     void Creature::addRandomMuscle(int tc1, int tc2) {
-        int axon = getNewMuscleAxon(n.size());
         if (tc1 == -1) {
-            tc1 = rand() % n.size();
+            tc1 = rInt(0, n.size());
             tc2 = tc1;
-            while (tc2 == tc1 && n.size () >= 2) {
-                tc2 = rand() % n.size();
+            while (tc2 == tc1 && n.size() >= 2) {
+                tc2 = rInt(0, n.size());
             }
         }
-        float len = rFloat(0.5, 1.5);
+
+        float rlength1 = rFloat(0.5f,1.5f);
+        float rlength2 = rFloat(0.5f,1.5f);
+        float rtime1 = rFloat(0.0f,1.0f);
+        float rtime2 = rFloat(0.0f,1.0f);
+
         if (tc1 != -1) {
-            float dx = n.at(tc1).getX() - n.at(tc2).getX();
-            float dy = n.at(tc1).getY() - n.at(tc2).getY();
-            len = sqrt(dx*dx+dy*dy);
+            float distance = dist(n.at(tc1).getX(), n.at(tc1).getY(), n.at(tc2).getX(), n.at(tc2).getY());
+            float ratio = rFloat(0.01f,0.2f);
+            rlength1 = distance*(1.0f-ratio);
+            rlength2 = distance*(1.0f+ratio);
         }
-        Muscle newMuscle(axon, tc1, tc2, len, rFloat(0.02, 0.08));
+
+        // if (rlength1 == 0.0f || rlength2 == 0.0f)
+		// {
+		// 	std::cout << "addRandomMuscle" << std::endl;
+        //     std::cout << "n.size" << n.size() << std::endl;
+        //     std::cout << "tc1: "<< tc1 << std::endl;
+        //     std::cout << "tc2: "<< tc2 << std::endl;
+        //     std::cout << "rlength1: "<< rlength1 << std::endl;
+        //     std::cout << "rlength2: "<< rlength2 << std::endl;
+		// }
+
+        Muscle newMuscle(rInt(1,3),tc1,tc2,rtime1,rtime2, min(rlength1,rlength2),max(rlength1,rlength2),isItContracted(rtime1,rtime2),rFloat(0.02f,0.08f));
         m.push_back(newMuscle);
     }
     void Creature::removeRandomNode() {
@@ -221,7 +183,7 @@ namespace EC
         }
     }
     void Creature::removeRandomMuscle() {
-        int choice = floor(rFloat(0, m.size()));
+        int choice = floor(rFloat(0.0f, (float)m.size()));
         m.erase(m.begin() + choice);
     }
     Creature Creature::copyCreature(int newID) {

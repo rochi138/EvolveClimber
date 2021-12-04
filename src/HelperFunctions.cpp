@@ -31,4 +31,7 @@ namespace EC{
 	float toMuscleUsable(float f){
 		return fminf(fmaxf(f,0.5f),1.5f);
 	}
+	bool isItContracted(float rtime1, float rtime2){
+		return rtime1 <= rtime2;
+	}
 }

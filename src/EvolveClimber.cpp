@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <stdio.h>
+#include <math.h>
 #include <iostream>
 
 #include "consts.h"
@@ -77,14 +78,37 @@ void EvolveClimber::testGen()
   // if (!m_stepbystepslow) {
   for (vector<Creature>::iterator it = m_creaturePopulation.begin(); it != m_creaturePopulation.end(); ++it)
   {
-    setGlobalVariables(it);
+    // simulation variables   
+    vector<Node> test_n;
+    vector<Muscle> test_m;
+    vector<Node>* c_n = it->getN();
+    vector<Muscle>* c_m = it->getM();
+    for (vector<Node>::iterator it = c_n->begin(); it != c_n->end(); ++it)
+    {
+      test_n.push_back(it->copyNode());
+    }
+    for (vector<Muscle>::iterator it = c_m->begin(); it != c_m->end(); ++it)
+    {
+      test_m.push_back(it->copyMuscle());
+    }
+    id = it->getId();
+    timer = 0;
+    // camZoom = 0.01;
+    // camX = 0;
+    // camY = 0;
+    cTimer = it->getCreatureTimer();
+    simulationTimer = 0;
+    energy = baselineEnergy;
+    totalNodeNausea = 0;
+    averageNodeNausea = 0;
+
     for (int s = 0; s < 900; s++) {
-      simulate(n, m);
-      averageNodeNausea = totalNodeNausea/n.size();
+      simulate(test_n, test_m);
+      averageNodeNausea = totalNodeNausea/test_n.size();
       simulationTimer++;
       timer++;
     }
-    it->setD(calcAverages());
+    it->setD(calcAverages(test_n));
   }
   // }
 }
@@ -144,18 +168,16 @@ void EvolveClimber::compileGenData()
 void EvolveClimber::simulate(vector<Node> &n, vector<Muscle> &m) {
   for (vector<Muscle>::iterator it = m.begin(); it != m.end(); ++it)
   {
-    it->applyForce(&n);
+    it->setThruPeriod(fmod((float(timer)/cTimer)/float(it->getPeriod()), 1.0f));
+    float target = it->getCondition() ? it->getContractLength() : it->getExtendLength();
+    it->setContracted(it->getCondition());
+    it->applyForce(n, target);
   }
   for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
   {
     it->applyGravity();
     it->applyForces();
     it->hitWalls();
-    it->doMath(&n);
-  }
-  for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
-  {
-    it->realizeMathValues();
   }
 }
 
@@ -194,14 +216,6 @@ void EvolveClimber::reproduce()
     toStableConfiguration(*mutant->getN(), *mutant->getM());
     adjustToCenter(*mutant->getN());  
   }
-
-  float b = 0;
-  vector<Node> temp_n = *(m_creaturePopulation.begin()->getN());
-  for (vector<Node>::iterator it = temp_n.begin(); it != temp_n.end(); ++it)
-  {
-    b += it->getX();
-  }
-  std::cout << "average x: " << b << std::endl;
   
   for (vector<Creature>::iterator it = c2.begin(); it != c2.end(); ++it)
   {
@@ -215,9 +229,9 @@ void EvolveClimber::reproduce()
   // }
 }
 
-float EvolveClimber::calcAverages() {
-  averageX = 0;
-  averageY = 0;
+float EvolveClimber::calcAverages(vector<Node> &n) {
+  float averageX = 0;
+  float averageY = 0;
   for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
   {
     averageX += it->getX();
@@ -227,31 +241,6 @@ float EvolveClimber::calcAverages() {
   averageY = averageY/n.size();
 
   return averageX;
-}
-
-void EvolveClimber::setGlobalVariables(vector<Creature>::iterator thisCreature) {
-  n.clear();
-  m.clear();
-  vector<Node>* c_n = thisCreature->getN();
-  vector<Muscle>* c_m = thisCreature->getM();
-  for (vector<Node>::iterator it = c_n->begin(); it != c_n->end(); ++it)
-  {
-    n.push_back(it->copyNode());
-  }
-  for (vector<Muscle>::iterator it = c_m->begin(); it != c_m->end(); ++it)
-  {
-    m.push_back(it->copyMuscle());
-  }
-  id = thisCreature->getId();
-  timer = 0;
-  camZoom = 0.01;
-  camX = 0;
-  camY = 0;
-  cTimer = thisCreature->getCreatureTimer();
-  simulationTimer = 0;
-  energy = baselineEnergy;
-  totalNodeNausea = 0;
-  averageNodeNausea = 0;
 }
 
 void EvolveClimber::onClickCreate()
@@ -264,8 +253,7 @@ void EvolveClimber::onClickCreate()
     int muscleNum = rInt(nodeNum-1, nodeNum*3-6);
 
     for (int i = 0; i < nodeNum; ++i) {
-        Node newNode(rFloat(-1.0f, 1.0f), rFloat(-1.0f, 1.0f), 0, 0, 0.4, rFloat(0.0f, 1.0f), rFloat(0.0f,1.0f), 
-      floor(rFloat(0.0f,operationCount)),floor(rFloat(0.0f,nodeNum)),floor(rFloat(0.0f,nodeNum))); //replaced all nodes' sizes with 0.4, used to be random(0.1,1), random(0,1)
+        Node newNode(rFloat(-1.0f, 1.0f), rFloat(-1.0f, 1.0f), 0.0f, 0.0f, 0.4f, rFloat(0.0f, 1.0f)); //replaced all nodes' sizes with 0.4, used to be random(0.1,1), random(0,1)
       create_n.push_back(newNode);
     }
 
@@ -276,18 +264,21 @@ void EvolveClimber::onClickCreate()
         tc2 = rInt(0, nodeNum);
       }
 
-      // float s = i >= 10 ? 0.3312 : 0.8;
-      Muscle newMuscle(getNewMuscleAxon(nodeNum), tc1, tc2, rFloat(0.5f,1.5f), rFloat(0.02f, 0.08f));
+      float rlength1 = rFloat(0.5f,1.5f);
+      float rlength2 = rFloat(0.5f,1.5f);
+      float rtime1 = rFloat(0.0f,1.0f);
+      float rtime2 = rFloat(0.0f,1.0f);
+
+      Muscle newMuscle(rInt(1,3),tc1,tc2,rtime1,rtime2, min(rlength1,rlength2),max(rlength1,rlength2),isItContracted(rtime1,rtime2),rFloat(0.02f,0.08f));
       create_m.push_back(newMuscle);
     }
     
     toStableConfiguration(create_n, create_m);
     adjustToCenter(create_n);
 
-    Creature newCreature(id, create_n, create_m, 0, true, rFloat(40.0f, 80.0f), 1.0);
+    Creature newCreature(id, create_n, create_m, 0.0f, true, rFloat(40.0f, 80.0f), 1.0f);
     newCreature.checkForOverlap();
     newCreature.checkForLoneNodes();
-    newCreature.checkForBadAxons();
     m_creaturePopulation.push_back(newCreature);
     // drawCreature(c[y*40+x], x*3+5.5, y*2.5+3, 0);
   }
@@ -297,7 +288,8 @@ void EvolveClimber::toStableConfiguration(vector<Node> &n, vector<Muscle> &m) {
   for (int j = 0; j < 200; ++j) {
     for (vector<Muscle>::iterator it = m.begin(); it != m.end(); ++it)
     {
-      it->applyForce(&n);
+      float target = it->getContracted() ? it->getContractLength() : it->getExtendLength();
+      it->applyForce(n, target);
     }
     for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
     {
@@ -312,16 +304,18 @@ void EvolveClimber::toStableConfiguration(vector<Node> &n, vector<Muscle> &m) {
 }
 
 void EvolveClimber::adjustToCenter(vector<Node> &n) {
-  float avx = 0;
-  float lowY = -1000;
+  float avx = 0.0f;
+  float lowY = -1000.0f;
   for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
   {
     avx += it->getX();
-    if (it->getY()+it->getM()/2 > lowY) {
-        lowY = it->getY()+it->getM()/2;
+    if (it->getY()+it->getM()/2.0f > lowY) {
+        lowY = it->getY()+it->getM()/2.0f;
     }
   }
-  avx /= n.size();
+  // std::cout << "adjustToCenter1 avx: " << avx << std::endl;
+  avx /= (float)n.size();
+  // std::cout << "adjustToCenter2 avx: " << avx << std::endl;
   for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
   {
     it->incrementX(-avx);

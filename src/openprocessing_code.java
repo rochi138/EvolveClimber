@@ -269,9 +269,6 @@ class Node {
       valueToBe = pressure;
     }
   }
-  void realizeMathValues(int i){
-    value = valueToBe;
-  }
   Node copyNode() {
     return (new Node(x, y, 0, 0, m, f, value, operation, axon1, axon2));
   }

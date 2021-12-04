@@ -53,13 +53,11 @@ namespace EC
         vector<int> m_topSpeciesCounts;
         vector<Creature> m_creaturePopulation;
         vector<Creature> c2;
-        vector<Node> n;
-        vector<Muscle> m;
         vector<Creature> m_creatureDatabase;
 
         
         void simulate(vector<Node> &n, vector<Muscle> &m);
-        float calcAverages();
-        void setGlobalVariables(vector<Creature>::iterator thisCreature);
+        float calcAverages(vector<Node> &n);
+        // void setGlobalVariables(vector<Creature>::iterator thisCreature);
     };
 }
