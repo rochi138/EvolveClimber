@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <experimental/coroutine>
-#include <iostream>
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>

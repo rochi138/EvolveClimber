@@ -2,8 +2,6 @@
 #include "../HelperFunctions.h"
 #include "Node.h"
 
-#include <iostream>
-
 using namespace std;
 
 namespace EC
@@ -17,10 +15,6 @@ namespace EC
 		f = tf;
 	}
 	void Node::applyForces() {
-		if (isnan(vx*airFriction))
-		{    
-			// std::cout << "applyForces vx: " << vx << std::endl;
-		}
 		vx *= airFriction;
 		vy *= airFriction;
 		y += vy;
@@ -47,10 +41,6 @@ namespace EC
 					vx = 0.0f;
 				}
 			}
-		}
-		if (isnan(vx))
-		{    
-			std::cout << "hitWalls vx: " << vx << std::endl;
 		}
 	}
 	Node Node::copyNode() {

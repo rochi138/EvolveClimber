@@ -18,32 +18,20 @@ extern int minBar;
 extern int maxBar;
 
 extern vector<Rectangle> rects;
-// PGraphics graphImage;
-// PGraphics screenImage;
-// PGraphics popUpImage;
-// PGraphics segBarImage;
 extern bool haveGround;
 extern int histBarsPerMeter;
 extern string fitnessUnit;
 extern string fitnessName;
-extern float baselineEnergy;
-extern int energyDirection;
 extern float FRICTION;
 extern float bigMutationChance;
-extern float hazelStairs;
 extern bool saveFramesPerGeneration;
 
 extern int lastImageSaved;
 extern float pressureUnit;
-extern float energyUnit;
-extern float nauseaUnit;
 extern int gensToDo;
 extern float cTimer;
 extern float postFontSize;
 extern float scaleToFixBug;
-extern float energy;
-extern float averageNodeNausea;
-extern float totalNodeNausea;
 
 extern float lineY1;
 extern float lineY2;

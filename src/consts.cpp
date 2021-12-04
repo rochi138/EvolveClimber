@@ -20,8 +20,6 @@ bool haveGround = true;
 int histBarsPerMeter = 5;
 string fitnessUnit = "m";
 string fitnessName = "Distance";
-float baselineEnergy = 0.0f;
-int energyDirection = 1; // if 1, it'll count up how much energy is used.  if -1, it'll count down from the baseline energy, and when energy hits 0, the creature dies.
 float FRICTION = 4.0f;
 float bigMutationChance = 0.06f;
 float hazelStairs = -1.0f;
@@ -29,16 +27,11 @@ bool saveFramesPerGeneration = true;
 
 int lastImageSaved = -1;
 float pressureUnit = 500.0f/2.37f;
-float energyUnit = 20.0f;
-float nauseaUnit = 5.0f;
 
 int gensToDo = 0;
 float cTimer = 60.0f;
 float postFontSize = 0.96f;
 float scaleToFixBug = 1000.0f;
-float energy = 0.0f;
-float averageNodeNausea = 0.0f;
-float totalNodeNausea = 0.0f;
 
 float lineY1 = -0.08f; // These are for the lines of text on each node.
 float lineY2 = 0.35f;

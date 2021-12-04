@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <stdio.h>
 #include <math.h>
-#include <iostream>
 
 #include "consts.h"
 #include "EvolveClimber.h"
@@ -98,13 +97,9 @@ void EvolveClimber::testGen()
     // camY = 0;
     cTimer = it->getCreatureTimer();
     simulationTimer = 0;
-    energy = baselineEnergy;
-    totalNodeNausea = 0;
-    averageNodeNausea = 0;
 
     for (int s = 0; s < 900; s++) {
       simulate(test_n, test_m);
-      averageNodeNausea = totalNodeNausea/test_n.size();
       simulationTimer++;
       timer++;
     }
@@ -313,9 +308,7 @@ void EvolveClimber::adjustToCenter(vector<Node> &n) {
         lowY = it->getY()+it->getM()/2.0f;
     }
   }
-  // std::cout << "adjustToCenter1 avx: " << avx << std::endl;
   avx /= (float)n.size();
-  // std::cout << "adjustToCenter2 avx: " << avx << std::endl;
   for (vector<Node>::iterator it = n.begin(); it != n.end(); ++it)
   {
     it->incrementX(-avx);

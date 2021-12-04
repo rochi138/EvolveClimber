@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <iostream>
 
 #define _USE_MATH_DEFINES
  
@@ -119,8 +118,6 @@ namespace EC
                 }
             }
         }
-        if (nextClosestNode == n.size() -1)
-            std::cout << "nextClosestNode" << std::endl;
         addRandomMuscle(parentNode, n.size()-1);
         addRandomMuscle(nextClosestNode, n.size()-1);
     }
@@ -144,16 +141,6 @@ namespace EC
             rlength1 = distance*(1.0f-ratio);
             rlength2 = distance*(1.0f+ratio);
         }
-
-        // if (rlength1 == 0.0f || rlength2 == 0.0f)
-		// {
-		// 	std::cout << "addRandomMuscle" << std::endl;
-        //     std::cout << "n.size" << n.size() << std::endl;
-        //     std::cout << "tc1: "<< tc1 << std::endl;
-        //     std::cout << "tc2: "<< tc2 << std::endl;
-        //     std::cout << "rlength1: "<< rlength1 << std::endl;
-        //     std::cout << "rlength2: "<< rlength2 << std::endl;
-		// }
 
         Muscle newMuscle(rInt(1,3),tc1,tc2,rtime1,rtime2, min(rlength1,rlength2),max(rlength1,rlength2),isItContracted(rtime1,rtime2),rFloat(0.02f,0.08f));
         m.push_back(newMuscle);
