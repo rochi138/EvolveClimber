@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <iostream>
 
 #include "ECIMGUI.h"
 #include "imgui.h"
@@ -9,7 +10,7 @@ using namespace EC;
 
 void ECIMGUI::overviewMenu()
 {	
-	ImGui::BeginChild("##LeftCol", ImVec2(ImGui::GetContentRegionAvail().x * 0.8f, ImGui::GetContentRegionAvail().y), false);
+	ImGui::BeginChild("##LeftCol", ImVec2(ImGui::GetContentRegionAvail().x * 0.7f, ImGui::GetContentRegionAvail().y), false);
 	overviewMenuLeftColumn();	
 	ImGui::EndChild();
 
@@ -90,24 +91,38 @@ void ECIMGUI::overviewMenu()
 
 void ECIMGUI::overviewMenuLeftColumn()
 {
-	ImGui::Text("Generation %i", m_evolveClimber->getGen());
+    int gen = m_evolveClimber->getGen();
+	ImGui::Text("Generation %i", gen);
+    int topSpecies = m_evolveClimber->getTopSpecies()->back();
+    ImGui::Text("Dominant Species: %i nodes, %i muscles", topSpecies/10, topSpecies%10);
 
-	vector<vector<float>> percentile = *m_evolveClimber->getPercentile();
-	char title[50];
-	sprintf(title, "Median Distance - %.3fm", (percentile.begin() + 2)->back());
-	if (ImPlot::BeginPlot(title, ImVec2(-1,0), ImPlotFlags_NoMouseText)) {
-        ImPlot::SetupAxes("Gen #","Distance (m)", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
+    vector<vector<float>> percentile = *m_evolveClimber->getPercentile();
+    ImGui::Text("Best: %.3fm", (percentile.begin())->back());
+    ImGui::Text("Median: %.3fm", (percentile.begin() + 2)->back());
 
-        vector<float> xAxis = *m_evolveClimber->getXAxis();
-        int len = m_evolveClimber->getGen() +1;
+    if (!m_evolveClimber->getRunCoroutine() || gen < 100)
+    {
+        char title[50];
+        sprintf(title, "Median Distance - %.3fm", (percentile.begin() + 2)->back());
+        if (ImPlot::BeginPlot(title, ImVec2(-1,0), ImPlotFlags_NoMouseText)) {
+            ImPlot::SetupAxes("Gen #","Distance (m)", ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
 
-        for (vector<vector<float>>::iterator it = percentile.begin(); it != percentile.end(); ++it)
-        {
-            ImPlot::PlotLine(p_text[it - percentile.begin()].c_str(), &(*it)[0], len);
+            vector<float> xAxis = *m_evolveClimber->getXAxis();
+            int len = m_evolveClimber->getGen() +1;
+
+            for (vector<vector<float>>::iterator it = percentile.begin(); it != percentile.end(); ++it)
+            {
+                ImPlot::PlotLine(p_text[it - percentile.begin()].c_str(), &(*it)[0], len);
+            }
+
+            ImPlot::EndPlot();
         }
-
-        ImPlot::EndPlot();
+        overviewMenuDatabase();
     }
+    else
+    {
+        ImGui::Text("Graphs unavailable while simulating due to memory issues");
+    }    
 }
 
 #pragma endregion
@@ -121,39 +136,60 @@ void ECIMGUI::overviewMenuRightColumn()
 
 void ECIMGUI::overviewMenuRightButtons()
 {
-	ImGui::Button("Do 1 step-by-step generation");
-    if (ImGui::Button("Do 1 quick generation"))
+    if (m_evolveClimber->getRunCoroutine())
     {
-        m_menu = 4;
-        m_evolveClimber->testGen();
+        if (ImGui::Button("STOP"))
+            m_evolveClimber->onClickStop();
+    } 
+    else {
+        // ImGui::Button("Do 1 step-by-step generation");
+        if (ImGui::Button("Do 1 quick generation"))
+        {
+            m_menu = 4;
+            m_evolveClimber->testGen();
+        }
+
+        if (ImGui::Button("Do 1 gen ASAP"))
+            m_evolveClimber->onClickASAP();
+        if (ImGui::Button("Do gens ALAP"))
+            m_evolveClimber->onClickALAP();
+        
+        ImGui::Text("Do ");
+        ImGui::SameLine();
+        ImGui::InputInt("gens ASAP", m_evolveClimber->getGenToDoInput());
+        if (ImGui::Button("Go###DoXGensButton"))
+            m_evolveClimber->onClickDoXGens();
+        
+        ImGui::Text("Run until Generation");
+        ImGui::InputInt("##RunUntilNum", m_evolveClimber->getRunUntilGen());
+        if (ImGui::Button("Go###RunUntilButton"))
+            m_evolveClimber->onClickRunUntil();
     }
-    if (ImGui::Button("Do 1 gen ASAP"))
+	
+}
+
+void ECIMGUI::overviewMenuDatabase()
+{
+    int genSelected = m_evolveClimber->getGen();
+    if (genSelected > 0 )
     {
-        m_evolveClimber->onClickASAP();
-    }
-    if (ImGui::Button("Do gens ALAP"))
-    {
-        m_evolveClimber->onClickALAP();
-    }
-    if (ImGui::Button("STOP"))
-    {
-        m_evolveClimber->onClickStop();
-    }
-    ImGui::Text("Do ");
-    ImGui::SameLine();
-    ImGui::InputInt("gens ASAP", m_evolveClimber->getGenToDoInput());
-    ImGui::SameLine();
-    if (ImGui::Button("Go###DoXGensButton"))
-    {
-        m_evolveClimber->onClickDoXGens();
-    }
-    
-    ImGui::Text("Run until Generation");
-    ImGui::InputInt("##RunUntilNum", m_evolveClimber->getRunUntilGen());
-    if (ImGui::Button("Go###RunUntilButton"))
-    {
-        m_evolveClimber->onClickRunUntil();
-    }
+        ImDrawList* draw_list = ImGui::GetWindowDrawList();
+        float x = ImGui::GetContentRegionAvailWidth();
+        float spacing = 10.0f;
+        float width = (x-2*spacing) /3.0f;
+        
+        vector<Creature> creatureDatabase = *m_evolveClimber->getCreatureDatabase();
+        vector<Creature>::iterator idx = creatureDatabase.begin() + (genSelected-1)*3;
+        ImVec2 p = ImGui::GetCursorScreenPos();
+        draw_list->AddRectFilled(p, ImVec2(p.x+width, p.y+width), m_creatureBackgroundColor);
+        drawCreatureWhole(p, idx, width, draw_list);
+        p = ImVec2(p.x + width + spacing, p.y);
+        draw_list->AddRectFilled(p, ImVec2(p.x+width, p.y+width), m_creatureBackgroundColor);
+        drawCreatureWhole(p, idx +1, width, draw_list);
+        p = ImVec2(p.x + width + spacing, p.y);
+        draw_list->AddRectFilled(p, ImVec2(p.x+width, p.y+width), m_creatureBackgroundColor);
+        drawCreatureWhole(p, idx + 2, width, draw_list);
+    }    
 }
 
 #pragma endregion

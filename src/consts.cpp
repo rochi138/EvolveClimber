@@ -3,7 +3,6 @@
 #include "imgui.h"
 
 #include "Components/Creature.h"
-#include "Components/Rectangle.h"
 #include "consts.h"
 
 using namespace std;
@@ -15,22 +14,12 @@ float windowSizeMultiplier = 0.8f;
 int minBar = -10;
 int maxBar = 100;
 
-
 bool haveGround = true;
 int histBarsPerMeter = 5;
-string fitnessUnit = "m";
-string fitnessName = "Distance";
 float FRICTION = 4.0f;
 float bigMutationChance = 0.06f;
-float hazelStairs = -1.0f;
-bool saveFramesPerGeneration = true;
 
-int lastImageSaved = -1;
-float pressureUnit = 500.0f/2.37f;
-
-int gensToDo = 0;
 float cTimer = 60.0f;
-float postFontSize = 0.96f;
 float scaleToFixBug = 1000.0f;
 
 float lineY1 = -0.08f; // These are for the lines of text on each node.
@@ -49,10 +38,6 @@ bool drag = false;
 bool justGotBack = false;
 int creatures = 0;
 int creaturesTested = 0;
-int fontSize = 0;
-int fontSizes[] = {
-  50, 36, 25, 20, 16, 14, 11, 9
-};
 int statusWindow = -4;
 int prevStatusWindow = -4;
 int overallTimer = 0;

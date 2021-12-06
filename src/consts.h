@@ -5,7 +5,6 @@
 #include "imgui.h"
 
 #include "Components/Creature.h"
-#include "Components/Rectangle.h"
 
 using namespace std;
 namespace EC
@@ -17,20 +16,12 @@ extern float windowSizeMultiplier;
 extern int minBar;
 extern int maxBar;
 
-extern vector<Rectangle> rects;
 extern bool haveGround;
 extern int histBarsPerMeter;
-extern string fitnessUnit;
-extern string fitnessName;
 extern float FRICTION;
 extern float bigMutationChance;
-extern bool saveFramesPerGeneration;
 
-extern int lastImageSaved;
-extern float pressureUnit;
-extern int gensToDo;
 extern float cTimer;
-extern float postFontSize;
 extern float scaleToFixBug;
 
 extern float lineY1;
@@ -50,15 +41,12 @@ extern bool drag;
 extern bool justGotBack;
 extern int creatures;
 extern int creaturesTested;
-extern int fontSize;
-extern int fontSizes[8];
 extern int statusWindow;
 extern int prevStatusWindow;
 extern int overallTimer;
 extern bool miniSimulation;
 extern int creatureWatching;
 extern int simulationTimer;
-extern int creaturesInPosition[1000];
 
 extern float camZoom;
 extern float gravity;

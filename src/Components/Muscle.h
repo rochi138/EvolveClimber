@@ -28,6 +28,7 @@ namespace EC
 		float getContractLength() { return contractLength; }
 		float getExtendLength() { return extendLength; }
 		int getPeriod() { return period; }
+		float getRigidity() { return rigidity; }
 
 		void setC1(int i) { c1 = i; }
 		void setC2(int i) { c2 = i; }

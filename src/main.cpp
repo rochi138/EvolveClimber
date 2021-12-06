@@ -111,7 +111,6 @@ void loop()
     h();
   }
   ecImgui->draw_main();
-
   ImGui::Render();
 
   ImVec4 clear_color = ImGui::GetStyle().Colors[ImGuiCol_WindowBg];

@@ -2,6 +2,7 @@
 
 #include "consts.h"
 #include "EvolveClimber.h"
+#include "imgui.h"
 
 namespace EC
 {
@@ -19,6 +20,7 @@ namespace EC
         int m_menu;
         int m_genToDo;
         int m_runUntilGen;
+        ImColor m_creatureBackgroundColor; 
 
         EvolveClimber* m_evolveClimber;
 
@@ -43,5 +45,10 @@ namespace EC
         
         void overviewMenuRightColumn();
         void overviewMenuRightButtons();
+        void overviewMenuDatabase();
+
+        void drawCreatureWhole(ImVec2 p, vector<Creature>::iterator creature, float width, ImDrawList* draw_list);
+        void drawMuscle(bool contracted, vector<Node>::iterator ni1, vector<Node>::iterator ni2, ImVec2 origin, ImDrawList* draw_list, float scale, float rigidity);
+        void drawNode(vector<Node>::iterator ni, ImVec2 origin, ImDrawList* draw_list, float scale);
     };
 }

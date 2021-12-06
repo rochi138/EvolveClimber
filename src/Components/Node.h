@@ -17,6 +17,7 @@ namespace EC
 		Node copyNode();
 		Node modifyNode(float mutability, int nodeNum);
 
+		float getF() { return f; }
 		float getM() { return m; }
 		float getX() { return x; }
 		float getY() { return y; }

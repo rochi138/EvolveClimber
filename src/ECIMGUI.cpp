@@ -1,13 +1,16 @@
 #include <stdio.h>
 
+#include "consts.h"
 #include "ECIMGUI.h"
 #include "imgui.h"
+// #include "implot.h"
 
 using namespace EC;
 
 ECIMGUI::ECIMGUI(EvolveClimber* evolveClimber)
 : m_showSettings(false)
 , m_menu(0)
+, m_creatureBackgroundColor(0.6627f, 0.6627f, 0.6627f, 1.0f)
 , m_evolveClimber(evolveClimber)
 {}
 
@@ -24,7 +27,7 @@ ECIMGUI::ECIMGUI(EvolveClimber* evolveClimber)
 // 			V2 = 2 * U2 - 1;
 // 			S = V1 * V1 + V2 * V2;
 // 			} while(S >= 1 || S == 0);
-
+//
 // 		X = V1 * sqrt(-2 * log(S) / S);
 // 	} else
 // 		X = V2 * sqrt(-2 * log(S) / S);
@@ -43,7 +46,7 @@ ECIMGUI::ECIMGUI(EvolveClimber* evolveClimber)
 
 void ECIMGUI::draw_main()
 {
-    // ImPlot::ShowDemoWindow();
+    //ImPlot::ShowDemoWindow();
     draw_menus();
     draw_settings();    
 }
@@ -53,7 +56,7 @@ void ECIMGUI::draw_main()
 void ECIMGUI::draw_menus()
 {
     ImGui::SetNextWindowPos(ImVec2(20, 20));
-    ImGui::SetNextWindowSize(ImVec2(800, 600));
+    ImGui::SetNextWindowSize(ImVec2(1000, 800));
     ImGui::Begin("Evolve Climber");
     
     switch (m_menu)
@@ -94,13 +97,41 @@ void ECIMGUI::gen0Menu()
 #pragma region --Settings--
 void ECIMGUI::draw_settings()
 {
-    if (m_showSettings)
+    if (!m_showSettings)
+        return;
+
+    ImGui::SetNextWindowPos(ImVec2(1020, 20));
+    ImGui::SetNextWindowSize(ImVec2(200, 800));
+    ImGui::Begin("Settings", &m_showSettings);
     {
-        ImGui::SetNextWindowPos(ImVec2(820, 20));
-        ImGui::SetNextWindowSize(ImVec2(200, 600));
-        ImGui::Begin("Settings", &m_showSettings);
-        ImGui::Text("Setttings go here");
-        ImGui::End();
+        ImGui::Text("Set random seed");
+        ImGui::InputInt("##InputSeed", m_evolveClimber->getSeed());
+        if (ImGui::Button("Apply"))
+        {
+            m_evolveClimber->onClickSeed();
+        }
+
+        ImGui::Text("Set simulation duration");
+        ImGui::InputInt("##InputMaxTime", m_evolveClimber->getMaxTime());
+        ImGui::Text("Set big change mutability");
+        ImGui::InputFloat("##InputBig", &bigMutationChance, 0.01f, 1.0f, "%.3f");
+        ImGui::Text("Set gravity");
+        ImGui::InputFloat("##InputGravity", &gravity, 0.01f, 1.0f, "%.3f");
+        ImGui::Text("Set friction");
+        ImGui::InputFloat("##InputFriction", &FRICTION, 0.01f, 1.0f, "%.3f");
+        ImGui::Text("Set air friction");
+        ImGui::InputFloat("##InputAirFriction", &airFriction, 0.01f, 1.0f, "%.3f");
+
+        ImGui::Separator();
+        ImGui::Text("Change selection function");
+        int* selectionFunction = m_evolveClimber->getSelectionFunction();
+        ImGui::RadioButton("Cubic", selectionFunction, 0);
+        ImGui::RadioButton("Step", selectionFunction, 1);
+        ImGui::RadioButton("Linear", selectionFunction, 2);
+        ImGui::RadioButton("Uniform", selectionFunction, 3);
     }
+    
+    ImGui::End();
+
 }
 #pragma endregion
